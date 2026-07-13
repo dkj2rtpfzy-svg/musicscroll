@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/widgets/menu_card.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -9,48 +11,78 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("MusicScroll"),
       ),
-      body: Center(
-        child: Padding(
+      body: SafeArea(
+        child: ListView(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.music_note,
-                size: 100,
-              ),
+          children: [
+            const SizedBox(height: 20),
 
-              const SizedBox(height: 24),
+            const Icon(
+              Icons.music_note,
+              size: 90,
+            ),
 
-              const Text(
-                "Bienvenue sur MusicScroll",
+            const SizedBox(height: 16),
+
+            const Center(
+              child: Text(
+                "MusicScroll",
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 34,
                   fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
               ),
+            ),
 
-              const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
-              Text(
-                "L'application pensée pour les musiciens.",
-                textAlign: TextAlign.center,
+            Center(
+              child: Text(
+                "Powered by ALFAGA",
                 style: TextStyle(
-                  fontSize: 18,
                   color: Colors.grey.shade400,
+                  fontSize: 16,
                 ),
               ),
+            ),
 
-              const SizedBox(height: 40),
+            const SizedBox(height: 40),
 
-              FilledButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.library_music),
-                label: const Text("Accéder à la bibliothèque"),
-              ),
-            ],
-          ),
+            MenuCard(
+              icon: Icons.library_music,
+              title: "Bibliothèque",
+              subtitle: "Tous vos morceaux",
+              onTap: () {},
+            ),
+
+            MenuCard(
+              icon: Icons.star,
+              title: "Favoris",
+              subtitle: "Vos morceaux préférés",
+              onTap: () {},
+            ),
+
+            MenuCard(
+              icon: Icons.mic,
+              title: "Mode Concert",
+              subtitle: "Défilement automatique",
+              onTap: () {},
+            ),
+
+            MenuCard(
+              icon: Icons.queue_music,
+              title: "Setlists",
+              subtitle: "Préparez vos concerts",
+              onTap: () {},
+            ),
+
+            MenuCard(
+              icon: Icons.settings,
+              title: "Réglages",
+              subtitle: "Préférences de l'application",
+              onTap: () {},
+            ),
+          ],
         ),
       ),
     );

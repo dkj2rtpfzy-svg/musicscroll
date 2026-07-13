@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/models/song.dart';
+
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final songs = [
-      {
-        "title": "Amazing Grace",
-        "artist": "Traditionnel",
-      },
-      {
-        "title": "Hallelujah",
-        "artist": "Leonard Cohen",
-      },
-      {
-        "title": "Hosanna",
-        "artist": "Hillsong",
-      },
+      const Song(
+        title: "Amazing Grace",
+        artist: "Traditionnel",
+        key: "G",
+        bpm: 90,
+      ),
+      const Song(
+        title: "Hallelujah",
+        artist: "Leonard Cohen",
+        key: "C",
+        bpm: 72,
+      ),
+      const Song(
+        title: "Hosanna",
+        artist: "Hillsong",
+        key: "D",
+        bpm: 128,
+      ),
     ];
 
     return Scaffold(
@@ -29,13 +37,20 @@ class LibraryScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final song = songs[index];
 
-          return ListTile(
-            leading: const CircleAvatar(
-              child: Icon(Icons.music_note),
+          return Card(
+            child: ListTile(
+              leading: const CircleAvatar(
+                child: Icon(Icons.music_note),
+              ),
+              title: Text(song.title),
+              subtitle: Text(song.artist),
+              trailing: Text(
+                song.key,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            title: Text(song["title"]!),
-            subtitle: Text(song["artist"]!),
-            trailing: const Icon(Icons.chevron_right),
           );
         },
       ),

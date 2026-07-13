@@ -1,0 +1,35 @@
+class Song {
+  final String title;
+  final String artist;
+  final String key;
+  final int bpm;
+  final String lyrics;
+  final bool favorite;
+
+  const Song({
+    required this.title,
+    required this.artist,
+    this.key = "",
+    this.bpm = 120,
+    this.lyrics = "",
+    this.favorite = false,
+  });
+
+  Song copyWith({
+    String? title,
+    String? artist,
+    String? key,
+    int? bpm,
+    String? lyrics,
+    bool? favorite,
+  }) {
+    return Song(
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      key: key ?? this.key,
+      bpm: bpm ?? this.bpm,
+      lyrics: lyrics ?? this.lyrics,
+      favorite: favorite ?? this.favorite,
+    );
+  }
+}

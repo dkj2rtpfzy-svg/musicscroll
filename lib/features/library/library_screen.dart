@@ -33,38 +33,92 @@ class LibraryScreen extends ConsumerWidget {
         itemBuilder: (context, index) {
           final song = songs[index];
 
-          return Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
+          return Dismissible(
+            key: ValueKey("${song.title}-$index"),
+            direction: DismissDirection.endToStart,
+
+            background: Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 24),
+              color: Colors.red,
+              child: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
             ),
-            child: ListTile(
-              leading: CircleAvatar(
-                child: Icon(
-                  song.favorite
-                      ? Icons.star
-                      : Icons.music_note,
-                ),
-              ),
-              title: Text(song.title),
-              subtitle: Text(song.artist),
-              trailing: Text(
-                song.key,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SongDetailScreen(
-                      song: song,
-                      songIndex: index,
+
+            confirmDismiss: (_) async {
+              return await showDialog<bool>(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text("Supprimer le morceau"),
+                      content: Text(
+                        "Voulez-vous supprimer « ${song.title} » ?",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(context, false),
+                          child: const Text("Annuler"),
+                        ),
+                        FilledButton(
+                          onPressed: () =>
+                              Navigator.pop(context, true),
+                          child: const Text("Supprimer"),
+                        ),
+                      ],
                     ),
+                  ) ??
+                  false;
+            },
+
+            onDismissed: (_) {
+              ref
+                  .read(songProvider.notifier)
+                  .removeSong(index);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "${song.title} supprimé",
                   ),
-                );
-              },
+                ),
+              );
+            },
+
+            child: Card(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
+              child: ListTile(
+                leading: CircleAvatar(
+                  child: Icon(
+                    song.favorite
+                        ? Icons.star
+                        : Icons.music_note,
+                  ),
+                ),
+                title: Text(song.title),
+                subtitle: Text(song.artist),
+                trailing: Text(
+                  song.key,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SongDetailScreen(
+                        song: song,
+                        songIndex: index,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           );
         },

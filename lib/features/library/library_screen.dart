@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/models/song.dart';
+import '../songs/song_detail_screen.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
@@ -13,6 +14,16 @@ class LibraryScreen extends StatelessWidget {
         artist: "Traditionnel",
         key: "G",
         bpm: 90,
+        lyrics: """
+Amazing Grace
+How sweet the sound
+That saved a wretch like me.
+
+I once was lost,
+but now am found,
+Was blind, but now I see.
+""",
+        favorite: true,
       ),
       const Song(
         title: "Hallelujah",
@@ -39,8 +50,12 @@ class LibraryScreen extends StatelessWidget {
 
           return Card(
             child: ListTile(
-              leading: const CircleAvatar(
-                child: Icon(Icons.music_note),
+              leading: CircleAvatar(
+                child: Icon(
+                  song.favorite
+                      ? Icons.star
+                      : Icons.music_note,
+                ),
               ),
               title: Text(song.title),
               subtitle: Text(song.artist),
@@ -50,6 +65,16 @@ class LibraryScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SongDetailScreen(
+                      song: song,
+                    ),
+                  ),
+                );
+              },
             ),
           );
         },

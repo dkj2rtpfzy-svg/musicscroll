@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/song_provider.dart';
 import '../songs/song_detail_screen.dart';
+import '../songs/song_form_screen.dart';
 
 class LibraryScreen extends ConsumerWidget {
   const LibraryScreen({super.key});
@@ -14,6 +15,18 @@ class LibraryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bibliothèque"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: "Ajouter un morceau",
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const SongFormScreen(),
+            ),
+          );
+        },
       ),
       body: ListView.builder(
         itemCount: songs.length,

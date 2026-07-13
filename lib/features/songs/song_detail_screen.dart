@@ -5,10 +5,12 @@ import 'song_editor_screen.dart';
 
 class SongDetailScreen extends StatelessWidget {
   final Song song;
+  final int songIndex;
 
   const SongDetailScreen({
     super.key,
     required this.song,
+    required this.songIndex,
   });
 
   @override
@@ -26,6 +28,7 @@ class SongDetailScreen extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (_) => SongEditorScreen(
                     song: song,
+                    songIndex: songIndex,
                   ),
                 ),
               );
@@ -43,9 +46,7 @@ class SongDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 8),
-
           Text(
             song.artist,
             style: TextStyle(
@@ -53,9 +54,7 @@ class SongDetailScreen extends StatelessWidget {
               color: Colors.grey.shade400,
             ),
           ),
-
           const SizedBox(height: 30),
-
           Card(
             child: ListTile(
               leading: const Icon(Icons.music_note),
@@ -63,7 +62,6 @@ class SongDetailScreen extends StatelessWidget {
               trailing: Text(song.key),
             ),
           ),
-
           Card(
             child: ListTile(
               leading: const Icon(Icons.speed),
@@ -71,7 +69,6 @@ class SongDetailScreen extends StatelessWidget {
               trailing: Text("${song.bpm} BPM"),
             ),
           ),
-
           Card(
             child: ListTile(
               leading: Icon(
@@ -81,14 +78,10 @@ class SongDetailScreen extends StatelessWidget {
                 color: Colors.amber,
               ),
               title: const Text("Favori"),
-              trailing: Text(
-                song.favorite ? "Oui" : "Non",
-              ),
+              trailing: Text(song.favorite ? "Oui" : "Non"),
             ),
           ),
-
           const SizedBox(height: 30),
-
           const Text(
             "Paroles",
             style: TextStyle(
@@ -96,9 +89,7 @@ class SongDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 12),
-
           Text(
             song.lyrics.isEmpty
                 ? "Aucune parole disponible."

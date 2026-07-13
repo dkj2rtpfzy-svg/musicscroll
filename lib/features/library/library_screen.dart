@@ -1,43 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared/models/song.dart';
+import '../../providers/song_provider.dart';
 import '../songs/song_detail_screen.dart';
 
-class LibraryScreen extends StatelessWidget {
+class LibraryScreen extends ConsumerWidget {
   const LibraryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final songs = [
-      const Song(
-        title: "Amazing Grace",
-        artist: "Traditionnel",
-        key: "G",
-        bpm: 90,
-        lyrics: """
-Amazing Grace
-How sweet the sound
-That saved a wretch like me.
-
-I once was lost,
-but now am found,
-Was blind, but now I see.
-""",
-        favorite: true,
-      ),
-      const Song(
-        title: "Hallelujah",
-        artist: "Leonard Cohen",
-        key: "C",
-        bpm: 72,
-      ),
-      const Song(
-        title: "Hosanna",
-        artist: "Hillsong",
-        key: "D",
-        bpm: 128,
-      ),
-    ];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final songs = ref.watch(songProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,6 +21,10 @@ Was blind, but now I see.
           final song = songs[index];
 
           return Card(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 6,
+            ),
             child: ListTile(
               leading: CircleAvatar(
                 child: Icon(
@@ -71,6 +47,7 @@ Was blind, but now I see.
                   MaterialPageRoute(
                     builder: (_) => SongDetailScreen(
                       song: song,
+                      songIndex: index,
                     ),
                   ),
                 );

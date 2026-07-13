@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/menu_card.dart';
+import '../library/library_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -40,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               child: Text(
                 "Powered by ALFAGA",
                 style: TextStyle(
-                  color: Colors.grey.shade400,
+                  color: Colors.grey,
                   fontSize: 16,
                 ),
               ),
@@ -52,7 +53,14 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.library_music,
               title: "Bibliothèque",
               subtitle: "Tous vos morceaux",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LibraryScreen(),
+                  ),
+                );
+              },
             ),
 
             MenuCard(

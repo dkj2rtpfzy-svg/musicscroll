@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../../shared/models/song.dart';
 
@@ -14,13 +15,52 @@ class ConcertScreen extends StatefulWidget {
   State<ConcertScreen> createState() => _ConcertScreenState();
 }
 
-class _ConcertScreenState extends State<ConcertScreen> {
+class _ConcertScreenState extends State<ConcertScreen>
+    with SingleTickerProviderStateMixin {
   bool _showControls = false;
   bool _isPlaying = false;
 
   double _lyricsFontSize = 28;
 
   final ScrollController _scrollController = ScrollController();
+
+  late final Ticker _ticker;
+
+  static const double _scrollSpeed = 0.8;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _ticker = createTicker((_) {
+      if (!_isPlaying) return;
+
+      if (!_scrollController.hasClients) return;
+
+      final position = _scrollController.offset + _scrollSpeed;
+
+      if (position >= _scrollController.position.maxScrollExtent) {
+        _isPlaying = false;
+        _ticker.stop();
+        setState(() {});
+        return;
+      }
+
+      _scrollController.jumpTo(position);
+    });
+  }
+
+  void _togglePlay() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
+
+    if (_isPlaying) {
+      _ticker.start();
+    } else {
+      _ticker.stop();
+    }
+  }
 
   void _increaseFont() {
     setState(() {
@@ -38,23 +78,13 @@ class _ConcertScreenState extends State<ConcertScreen> {
     });
   }
 
-  void _togglePlay() {
+  void _scrollToTop() {
+    _ticker.stop();
+
     setState(() {
-      _isPlaying = !_isPlaying;
+      _isPlaying = false;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          _isPlaying
-              ? "AutoScroll disponible au Sprint 013"
-              : "Pause",
-        ),
-      ),
-    );
-  }
-
-  void _scrollToTop() {
     _scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 400),
@@ -64,6 +94,7 @@ class _ConcertScreenState extends State<ConcertScreen> {
 
   @override
   void dispose() {
+    _ticker.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -85,12 +116,10 @@ class _ConcertScreenState extends State<ConcertScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.text_decrease),
-                  tooltip: "Réduire",
                   onPressed: _decreaseFont,
                 ),
                 IconButton(
                   icon: const Icon(Icons.text_increase),
-                  tooltip: "Agrandir",
                   onPressed: _increaseFont,
                 ),
                 IconButton(
@@ -99,7 +128,6 @@ class _ConcertScreenState extends State<ConcertScreen> {
                         ? Icons.pause
                         : Icons.play_arrow,
                   ),
-                  tooltip: "Lecture",
                   onPressed: _togglePlay,
                 ),
               ],

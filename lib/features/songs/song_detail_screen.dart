@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/models/song.dart';
+import '../../features/concert/concert_screen.dart';
 import '../../features/setlists/widgets/select_setlist_dialog.dart';
 import 'song_editor_screen.dart';
 
@@ -48,9 +49,7 @@ class SongDetailScreen extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 8),
-
           Text(
             song.artist,
             style: TextStyle(
@@ -58,7 +57,6 @@ class SongDetailScreen extends ConsumerWidget {
               color: Colors.grey.shade400,
             ),
           ),
-
           const SizedBox(height: 24),
 
           Row(
@@ -87,10 +85,11 @@ class SongDetailScreen extends ConsumerWidget {
                     foregroundColor: Colors.black,
                   ),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Mode Concert en préparation.",
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ConcertScreen(
+                          song: song,
                         ),
                       ),
                     );

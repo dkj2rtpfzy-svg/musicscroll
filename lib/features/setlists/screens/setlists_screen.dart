@@ -80,7 +80,7 @@ class SetlistsScreen extends ConsumerWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => SetlistDetailScreen(
-                            setlist: setlist,
+                            setlistId: setlist.id,
                           ),
                         ),
                       );

@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/song_provider.dart';
-import '../models/setlist.dart';
+import '../providers/setlist_provider.dart';
 
 class SetlistDetailScreen extends ConsumerWidget {
-  final Setlist setlist;
+  final String setlistId;
 
   const SetlistDetailScreen({
     super.key,
-    required this.setlist,
+    required this.setlistId,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final songs = ref.watch(songProvider);
+    final setlists = ref.watch(setlistProvider);
 
-    // Respecte exactement l'ordre des songIds
+    final setlist = setlists.firstWhere(
+      (setlist) => setlist.id == setlistId,
+    );
+
     final setlistSongs = setlist.songIds
         .map(
           (id) => songs.firstWhere(
             (song) => song.id == id,
-            orElse: () => throw Exception("Song introuvable : $id"),
           ),
         )
         .toList();

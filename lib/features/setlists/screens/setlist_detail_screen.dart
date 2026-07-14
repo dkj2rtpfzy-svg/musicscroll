@@ -16,8 +16,14 @@ class SetlistDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final songs = ref.watch(songProvider);
 
-    final setlistSongs = songs
-        .where((song) => setlist.songIds.contains(song.id))
+    // Respecte exactement l'ordre des songIds
+    final setlistSongs = setlist.songIds
+        .map(
+          (id) => songs.firstWhere(
+            (song) => song.id == id,
+            orElse: () => throw Exception("Song introuvable : $id"),
+          ),
+        )
         .toList();
 
     return Scaffold(
@@ -29,12 +35,12 @@ class SetlistDetailScreen extends ConsumerWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
-                "Ajout de morceaux disponible au prochain sprint.",
+                "Réorganisation disponible au prochain sprint.",
               ),
             ),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.reorder),
       ),
       body: setlistSongs.isEmpty
           ? const Center(
@@ -51,8 +57,8 @@ class SetlistDetailScreen extends ConsumerWidget {
 
                 return Card(
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.music_note),
+                    leading: CircleAvatar(
+                      child: Text("${index + 1}"),
                     ),
                     title: Text(song.title),
                     subtitle: Text(song.artist),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/models/song.dart';
+import '../../features/setlists/widgets/select_setlist_dialog.dart';
 import 'song_editor_screen.dart';
 
-class SongDetailScreen extends StatelessWidget {
+class SongDetailScreen extends ConsumerWidget {
   final Song song;
   final int songIndex;
 
@@ -14,7 +16,7 @@ class SongDetailScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(song.title),
@@ -64,11 +66,10 @@ class SongDetailScreen extends StatelessWidget {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Gestion des Setlists disponible au prochain sprint.",
-                        ),
+                    showDialog(
+                      context: context,
+                      builder: (_) => SelectSetlistDialog(
+                        songId: song.id,
                       ),
                     );
                   },

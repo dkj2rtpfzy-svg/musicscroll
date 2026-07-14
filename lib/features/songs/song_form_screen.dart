@@ -43,6 +43,7 @@ class _SongFormScreenState
     }
 
     final song = Song(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: titleController.text.trim(),
       artist: artistController.text.trim(),
       key: keyController.text.trim(),

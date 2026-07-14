@@ -1,4 +1,5 @@
 class Song {
+  final String id;
   final String title;
   final String artist;
   final String key;
@@ -7,6 +8,7 @@ class Song {
   final bool favorite;
 
   const Song({
+    required this.id,
     required this.title,
     required this.artist,
     required this.key,
@@ -16,6 +18,7 @@ class Song {
   });
 
   Song copyWith({
+    String? id,
     String? title,
     String? artist,
     String? key,
@@ -24,6 +27,7 @@ class Song {
     bool? favorite,
   }) {
     return Song(
+      id: id ?? this.id,
       title: title ?? this.title,
       artist: artist ?? this.artist,
       key: key ?? this.key,

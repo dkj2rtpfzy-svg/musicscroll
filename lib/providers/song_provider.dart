@@ -6,6 +6,7 @@ class SongNotifier extends StateNotifier<List<Song>> {
   SongNotifier()
       : super([
           const Song(
+            id: "song_001",
             title: "Amazing Grace",
             artist: "Traditionnel",
             key: "G",
@@ -18,12 +19,14 @@ That saved a wretch like me.
             favorite: true,
           ),
           const Song(
+            id: "song_002",
             title: "Hallelujah",
             artist: "Leonard Cohen",
             key: "C",
             bpm: 72,
           ),
           const Song(
+            id: "song_003",
             title: "Hosanna",
             artist: "Hillsong",
             key: "D",

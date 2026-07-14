@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/widgets/menu_card.dart';
 import '../library/library_screen.dart';
 import '../setlists/screens/setlists_screen.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -67,14 +68,7 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.star,
               title: "Favoris",
               subtitle: "Vos morceaux préférés",
-              onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const SetlistsScreen(),
-    ),
-  );
-},
+              onTap: () {},
             ),
 
             MenuCard(
@@ -88,7 +82,14 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.queue_music,
               title: "Setlists",
               subtitle: "Préparez vos concerts",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SetlistsScreen(),
+                  ),
+                );
+              },
             ),
 
             MenuCard(

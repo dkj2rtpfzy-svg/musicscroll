@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/setlist_provider.dart';
+import 'setlist_detail_screen.dart';
 
 class SetlistsScreen extends ConsumerWidget {
   const SetlistsScreen({super.key});
@@ -36,10 +37,10 @@ class SetlistsScreen extends ConsumerWidget {
                 ),
                 FilledButton(
                   onPressed: () {
-                    if (controller.text.trim().isNotEmpty) {
-                      ref
-                          .read(setlistProvider.notifier)
-                          .addSetlist(controller.text.trim());
+                    final name = controller.text.trim();
+
+                    if (name.isNotEmpty) {
+                      ref.read(setlistProvider.notifier).addSetlist(name);
                     }
 
                     Navigator.pop(context);
@@ -74,6 +75,18 @@ class SetlistsScreen extends ConsumerWidget {
                     subtitle: Text(
                       "${setlist.songIndexes.length} morceau(x)",
                     ),
+
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SetlistDetailScreen(
+                            setlist: setlist,
+                          ),
+                        ),
+                      );
+                    },
+
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {

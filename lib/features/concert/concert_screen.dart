@@ -26,40 +26,65 @@ class _ConcertScreenState extends State<ConcertScreen>
 
   late final Ticker _ticker;
 
-  static const double _scrollSpeed = 0.8;
+  Duration? _lastElapsed;
+
+  // Pixels par seconde
+  double _scrollSpeed = 50;
 
   @override
   void initState() {
     super.initState();
 
-    _ticker = createTicker((_) {
+    _ticker = createTicker((elapsed) {
       if (!_isPlaying) return;
-
       if (!_scrollController.hasClients) return;
 
-      final position = _scrollController.offset + _scrollSpeed;
-
-      if (position >= _scrollController.position.maxScrollExtent) {
-        _isPlaying = false;
-        _ticker.stop();
-        setState(() {});
+      if (_lastElapsed == null) {
+        _lastElapsed = elapsed;
         return;
       }
 
-      _scrollController.jumpTo(position);
+      final delta =
+          (elapsed - _lastElapsed!).inMicroseconds / 1000000.0;
+
+      _lastElapsed = elapsed;
+
+      final nextOffset =
+          _scrollController.offset + (_scrollSpeed * delta);
+
+      if (nextOffset >=
+          _scrollController.position.maxScrollExtent) {
+        _ticker.stop();
+
+        setState(() {
+          _isPlaying = false;
+        });
+
+        return;
+      }
+
+      _scrollController.jumpTo(nextOffset);
     });
   }
 
   void _togglePlay() {
+    if (_isPlaying) {
+      _ticker.stop();
+
+      setState(() {
+        _isPlaying = false;
+      });
+
+      return;
+    }
+
+    _lastElapsed = null;
+
     setState(() {
-      _isPlaying = !_isPlaying;
+      _isPlaying = true;
     });
 
-    if (_isPlaying) {
-      _ticker.start();
-    } else {
-      _ticker.stop();
-    }
+    _ticker.start();
   }
 
   void _increaseFont() {
@@ -84,6 +109,8 @@ class _ConcertScreenState extends State<ConcertScreen>
     setState(() {
       _isPlaying = false;
     });
+
+    _lastElapsed = null;
 
     _scrollController.animateTo(
       0,
@@ -116,10 +143,12 @@ class _ConcertScreenState extends State<ConcertScreen>
                 ),
                 IconButton(
                   icon: const Icon(Icons.text_decrease),
+                  tooltip: "Réduire",
                   onPressed: _decreaseFont,
                 ),
                 IconButton(
                   icon: const Icon(Icons.text_increase),
+                  tooltip: "Agrandir",
                   onPressed: _increaseFont,
                 ),
                 IconButton(
@@ -128,6 +157,7 @@ class _ConcertScreenState extends State<ConcertScreen>
                         ? Icons.pause
                         : Icons.play_arrow,
                   ),
+                  tooltip: "Lecture",
                   onPressed: _togglePlay,
                 ),
               ],
@@ -141,39 +171,75 @@ class _ConcertScreenState extends State<ConcertScreen>
               _showControls = !_showControls;
             });
           },
-          child: ListView(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(24),
+          child: Column(
             children: [
-              if (_showControls) ...[
-                Text(
-                  widget.song.title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
+              if (_showControls)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.speed,
+                        color: Colors.white,
+                      ),
+                      Expanded(
+                        child: Slider(
+                          value: _scrollSpeed,
+                          min: 20,
+                          max: 200,
+                          divisions: 18,
+                          label:
+                              "${_scrollSpeed.toStringAsFixed(0)} px/s",
+                          onChanged: (value) {
+                            setState(() {
+                              _scrollSpeed = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  widget.song.artist,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 22,
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
-              Text(
-                widget.song.lyrics.isEmpty
-                    ? "Aucune parole disponible."
-                    : widget.song.lyrics,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: _lyricsFontSize,
-                  height: 1.8,
+              Expanded(
+                child: ListView(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(24),
+                  children: [
+                    if (_showControls) ...[
+                      Text(
+                        widget.song.title,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 38,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.song.artist,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 22,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                    Text(
+                      widget.song.lyrics.isEmpty
+                          ? "Aucune parole disponible."
+                          : widget.song.lyrics,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _lyricsFontSize,
+                        height: 1.8,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

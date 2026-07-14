@@ -16,6 +16,10 @@ class SetlistDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final songs = ref.watch(songProvider);
 
+    final setlistSongs = songs
+        .where((song) => setlist.songIds.contains(song.id))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(setlist.name),
@@ -32,7 +36,7 @@ class SetlistDetailScreen extends ConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-      body: setlist.songIndexes.isEmpty
+      body: setlistSongs.isEmpty
           ? const Center(
               child: Text(
                 "Cette setlist ne contient encore aucun morceau.",
@@ -41,15 +45,9 @@ class SetlistDetailScreen extends ConsumerWidget {
             )
           : ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: setlist.songIndexes.length,
+              itemCount: setlistSongs.length,
               itemBuilder: (context, index) {
-                final songIndex = setlist.songIndexes[index];
-
-                if (songIndex >= songs.length) {
-                  return const SizedBox.shrink();
-                }
-
-                final song = songs[songIndex];
+                final song = setlistSongs[index];
 
                 return Card(
                   child: ListTile(

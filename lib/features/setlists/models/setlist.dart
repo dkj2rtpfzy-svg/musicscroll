@@ -1,23 +1,23 @@
 class Setlist {
   final String id;
   final String name;
-  final List<int> songIndexes;
+  final List<String> songIds;
 
   const Setlist({
     required this.id,
     required this.name,
-    this.songIndexes = const [],
+    this.songIds = const [],
   });
 
   Setlist copyWith({
     String? id,
     String? name,
-    List<int>? songIndexes,
+    List<String>? songIds,
   }) {
     return Setlist(
       id: id ?? this.id,
       name: name ?? this.name,
-      songIndexes: songIndexes ?? this.songIndexes,
+      songIds: songIds ?? this.songIds,
     );
   }
 }

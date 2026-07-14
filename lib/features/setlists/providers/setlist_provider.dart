@@ -31,24 +31,29 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
   // AJOUT D'UN MORCEAU
   // ===========================
 
-  void addSong(int setlistIndex, int songIndex) {
+  void addSong(String setlistId, String songId) {
     final setlists = [...state];
 
-    final setlist = setlists[setlistIndex];
+    final index =
+        setlists.indexWhere((setlist) => setlist.id == setlistId);
+
+    if (index == -1) return;
+
+    final setlist = setlists[index];
 
     // Empêche les doublons
-    if (setlist.songIndexes.contains(songIndex)) {
+    if (setlist.songIds.contains(songId)) {
       return;
     }
 
     final updated = setlist.copyWith(
-      songIndexes: [
-        ...setlist.songIndexes,
-        songIndex,
+      songIds: [
+        ...setlist.songIds,
+        songId,
       ],
     );
 
-    setlists[setlistIndex] = updated;
+    setlists[index] = updated;
 
     state = setlists;
   }
@@ -57,18 +62,23 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
   // SUPPRESSION D'UN MORCEAU
   // ===========================
 
-  void removeSong(int setlistIndex, int songIndex) {
+  void removeSong(String setlistId, String songId) {
     final setlists = [...state];
 
-    final setlist = setlists[setlistIndex];
+    final index =
+        setlists.indexWhere((setlist) => setlist.id == setlistId);
+
+    if (index == -1) return;
+
+    final setlist = setlists[index];
 
     final updated = setlist.copyWith(
-      songIndexes: setlist.songIndexes
-          .where((index) => index != songIndex)
+      songIds: setlist.songIds
+          .where((id) => id != songId)
           .toList(),
     );
 
-    setlists[setlistIndex] = updated;
+    setlists[index] = updated;
 
     state = setlists;
   }

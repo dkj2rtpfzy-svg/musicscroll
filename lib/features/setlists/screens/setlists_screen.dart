@@ -73,9 +73,8 @@ class SetlistsScreen extends ConsumerWidget {
                     leading: const Icon(Icons.queue_music),
                     title: Text(setlist.name),
                     subtitle: Text(
-                      "${setlist.songIndexes.length} morceau(x)",
+                      "${setlist.songIds.length} morceau(x)",
                     ),
-
                     onTap: () {
                       Navigator.push(
                         context,
@@ -86,7 +85,6 @@ class SetlistsScreen extends ConsumerWidget {
                         ),
                       );
                     },
-
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {

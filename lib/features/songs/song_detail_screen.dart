@@ -46,7 +46,9 @@ class SongDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+
           const SizedBox(height: 8),
+
           Text(
             song.artist,
             style: TextStyle(
@@ -54,7 +56,53 @@ class SongDetailScreen extends StatelessWidget {
               color: Colors.grey.shade400,
             ),
           ),
-          const SizedBox(height: 30),
+
+          const SizedBox(height: 24),
+
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Gestion des Setlists disponible au prochain sprint.",
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.queue_music),
+                  label: const Text("Setlist"),
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.black,
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Mode Concert en préparation.",
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.mic),
+                  label: const Text("Concert"),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 24),
+
           Card(
             child: ListTile(
               leading: const Icon(Icons.music_note),
@@ -62,6 +110,7 @@ class SongDetailScreen extends StatelessWidget {
               trailing: Text(song.key),
             ),
           ),
+
           Card(
             child: ListTile(
               leading: const Icon(Icons.speed),
@@ -69,6 +118,7 @@ class SongDetailScreen extends StatelessWidget {
               trailing: Text("${song.bpm} BPM"),
             ),
           ),
+
           Card(
             child: ListTile(
               leading: Icon(
@@ -81,7 +131,9 @@ class SongDetailScreen extends StatelessWidget {
               trailing: Text(song.favorite ? "Oui" : "Non"),
             ),
           ),
+
           const SizedBox(height: 30),
+
           const Text(
             "Paroles",
             style: TextStyle(
@@ -89,7 +141,9 @@ class SongDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+
           const SizedBox(height: 12),
+
           Text(
             song.lyrics.isEmpty
                 ? "Aucune parole disponible."

@@ -26,6 +26,52 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
       return setlist;
     }).toList();
   }
+
+  // ===========================
+  // AJOUT D'UN MORCEAU
+  // ===========================
+
+  void addSong(int setlistIndex, int songIndex) {
+    final setlists = [...state];
+
+    final setlist = setlists[setlistIndex];
+
+    // Empêche les doublons
+    if (setlist.songIndexes.contains(songIndex)) {
+      return;
+    }
+
+    final updated = setlist.copyWith(
+      songIndexes: [
+        ...setlist.songIndexes,
+        songIndex,
+      ],
+    );
+
+    setlists[setlistIndex] = updated;
+
+    state = setlists;
+  }
+
+  // ===========================
+  // SUPPRESSION D'UN MORCEAU
+  // ===========================
+
+  void removeSong(int setlistIndex, int songIndex) {
+    final setlists = [...state];
+
+    final setlist = setlists[setlistIndex];
+
+    final updated = setlist.copyWith(
+      songIndexes: setlist.songIndexes
+          .where((index) => index != songIndex)
+          .toList(),
+    );
+
+    setlists[setlistIndex] = updated;
+
+    state = setlists;
+  }
 }
 
 final setlistProvider =

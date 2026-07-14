@@ -9,8 +9,8 @@ class Song {
   const Song({
     required this.title,
     required this.artist,
-    this.key = "",
-    this.bpm = 120,
+    required this.key,
+    required this.bpm,
     this.lyrics = "",
     this.favorite = false,
   });

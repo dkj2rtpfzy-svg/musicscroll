@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../shared/models/song.dart';
 
@@ -34,6 +35,9 @@ class _ConcertScreenState extends State<ConcertScreen>
   @override
   void initState() {
     super.initState();
+
+    // Empêche l'écran de s'éteindre pendant le mode concert
+    WakelockPlus.enable();
 
     _ticker = createTicker((elapsed) {
       if (!_isPlaying) return;
@@ -121,6 +125,9 @@ class _ConcertScreenState extends State<ConcertScreen>
 
   @override
   void dispose() {
+    // Restaure le comportement normal du téléphone
+    WakelockPlus.disable();
+
     _ticker.dispose();
     _scrollController.dispose();
     super.dispose();

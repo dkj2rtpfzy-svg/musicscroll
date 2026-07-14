@@ -16,8 +16,11 @@ class ConcertScreen extends StatefulWidget {
 
 class _ConcertScreenState extends State<ConcertScreen> {
   bool _showControls = false;
+  bool _isPlaying = false;
 
   double _lyricsFontSize = 28;
+
+  final ScrollController _scrollController = ScrollController();
 
   void _increaseFont() {
     setState(() {
@@ -35,17 +38,51 @@ class _ConcertScreenState extends State<ConcertScreen> {
     });
   }
 
+  void _togglePlay() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _isPlaying
+              ? "AutoScroll disponible au Sprint 013"
+              : "Pause",
+        ),
+      ),
+    );
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-
       appBar: _showControls
           ? AppBar(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               title: Text(widget.song.title),
               actions: [
+                IconButton(
+                  icon: const Icon(Icons.vertical_align_top),
+                  tooltip: "Début",
+                  onPressed: _scrollToTop,
+                ),
                 IconButton(
                   icon: const Icon(Icons.text_decrease),
                   tooltip: "Réduire",
@@ -56,10 +93,18 @@ class _ConcertScreenState extends State<ConcertScreen> {
                   tooltip: "Agrandir",
                   onPressed: _increaseFont,
                 ),
+                IconButton(
+                  icon: Icon(
+                    _isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
+                  tooltip: "Lecture",
+                  onPressed: _togglePlay,
+                ),
               ],
             )
           : null,
-
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -69,6 +114,7 @@ class _ConcertScreenState extends State<ConcertScreen> {
             });
           },
           child: ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.all(24),
             children: [
               if (_showControls) ...[
@@ -81,9 +127,7 @@ class _ConcertScreenState extends State<ConcertScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 Text(
                   widget.song.artist,
                   textAlign: TextAlign.center,
@@ -92,10 +136,8 @@ class _ConcertScreenState extends State<ConcertScreen> {
                     fontSize: 22,
                   ),
                 ),
-
                 const SizedBox(height: 40),
               ],
-
               Text(
                 widget.song.lyrics.isEmpty
                     ? "Aucune parole disponible."

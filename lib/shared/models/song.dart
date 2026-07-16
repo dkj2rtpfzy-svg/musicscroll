@@ -36,4 +36,28 @@ class Song {
       favorite: favorite ?? this.favorite,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'artist': artist,
+      'key': key,
+      'bpm': bpm,
+      'lyrics': lyrics,
+      'favorite': favorite,
+    };
+  }
+
+  factory Song.fromMap(Map<String, dynamic> map) {
+    return Song(
+      id: map['id'] as String,
+      title: map['title'] as String,
+      artist: map['artist'] as String,
+      key: map['key'] as String,
+      bpm: map['bpm'] as int,
+      lyrics: map['lyrics'] as String? ?? "",
+      favorite: map['favorite'] as bool? ?? false,
+    );
+  }
 }

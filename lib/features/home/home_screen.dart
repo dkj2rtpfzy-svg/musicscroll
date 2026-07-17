@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/menu_card.dart';
+import '../favorites/favorites_screen.dart';
 import '../library/library_screen.dart';
 import '../setlists/screens/setlists_screen.dart';
 
@@ -68,7 +69,14 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.star,
               title: "Favoris",
               subtitle: "Vos morceaux préférés",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const FavoritesScreen(),
+                  ),
+                );
+              },
             ),
 
             MenuCard(

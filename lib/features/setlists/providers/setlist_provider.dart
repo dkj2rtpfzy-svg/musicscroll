@@ -1,9 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/setlist.dart';
+import '../../../service/storage_service.dart';
 
 class SetlistNotifier extends StateNotifier<List<Setlist>> {
-  SetlistNotifier() : super(const []);
+  SetlistNotifier() : super(StorageService.loadSetlists());
+
+  void _save() {
+    StorageService.saveSetlists(state);
+  }
 
   void addSetlist(String name) {
     final setlist = Setlist(
@@ -12,10 +17,12 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
     );
 
     state = [...state, setlist];
+    _save();
   }
 
   void removeSetlist(String id) {
     state = state.where((setlist) => setlist.id != id).toList();
+    _save();
   }
 
   void renameSetlist(String id, String newName) {
@@ -25,11 +32,9 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
       }
       return setlist;
     }).toList();
-  }
 
-  // ===========================
-  // AJOUT D'UN MORCEAU
-  // ===========================
+    _save();
+  }
 
   void addSong(String setlistId, String songId) {
     final setlists = [...state];
@@ -45,21 +50,16 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
       return;
     }
 
-    final updated = setlist.copyWith(
+    setlists[index] = setlist.copyWith(
       songIds: [
         ...setlist.songIds,
         songId,
       ],
     );
 
-    setlists[index] = updated;
-
     state = setlists;
+    _save();
   }
-
-  // ===========================
-  // SUPPRESSION
-  // ===========================
 
   void removeSong(String setlistId, String songId) {
     final setlists = [...state];
@@ -71,20 +71,15 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
 
     final setlist = setlists[index];
 
-    final updated = setlist.copyWith(
+    setlists[index] = setlist.copyWith(
       songIds: setlist.songIds
           .where((id) => id != songId)
           .toList(),
     );
 
-    setlists[index] = updated;
-
     state = setlists;
+    _save();
   }
-
-  // ===========================
-  // RÉORGANISATION
-  // ===========================
 
   void reorderSongs(
     String setlistId,
@@ -115,6 +110,7 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
     );
 
     state = setlists;
+    _save();
   }
 }
 

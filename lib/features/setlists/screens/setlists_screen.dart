@@ -85,13 +85,63 @@ class SetlistsScreen extends ConsumerWidget {
                         ),
                       );
                     },
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        ref
-                            .read(setlistProvider.notifier)
-                            .removeSetlist(setlist.id);
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          tooltip: "Renommer",
+                          onPressed: () {
+                            final controller = TextEditingController(
+                              text: setlist.name,
+                            );
+
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text("Renommer la setlist"),
+                                content: TextField(
+                                  controller: controller,
+                                  autofocus: true,
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("Annuler"),
+                                  ),
+                                  FilledButton(
+                                    onPressed: () {
+                                      final newName =
+                                          controller.text.trim();
+
+                                      if (newName.isNotEmpty) {
+                                        ref
+                                            .read(setlistProvider.notifier)
+                                            .renameSetlist(
+                                              setlist.id,
+                                              newName,
+                                            );
+                                      }
+
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Enregistrer"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          tooltip: "Supprimer",
+                          onPressed: () {
+                            ref
+                                .read(setlistProvider.notifier)
+                                .removeSetlist(setlist.id);
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );

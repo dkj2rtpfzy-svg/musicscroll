@@ -20,4 +20,20 @@ class Setlist {
       songIds: songIds ?? this.songIds,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'songIds': songIds,
+    };
+  }
+
+  factory Setlist.fromMap(Map<dynamic, dynamic> map) {
+    return Setlist(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      songIds: List<String>.from(map['songIds'] ?? []),
+    );
+  }
 }

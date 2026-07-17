@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/song_provider.dart';
+import '../../concert/concert_screen.dart';
 import '../providers/setlist_provider.dart';
 
 class SetlistDetailScreen extends ConsumerWidget {
@@ -32,6 +33,23 @@ class SetlistDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(setlist.name),
+        actions: [
+          if (setlistSongs.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.play_arrow),
+              tooltip: "Lancer le concert",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ConcertScreen(
+                      song: setlistSongs.first,
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

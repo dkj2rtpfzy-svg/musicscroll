@@ -89,6 +89,20 @@ class SetlistsScreen extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
+                          icon: const Icon(Icons.play_circle_fill),
+                          tooltip: "Mode Concert",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SetlistDetailScreen(
+                                  setlistId: setlist.id,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
                           icon: const Icon(Icons.edit),
                           tooltip: "Renommer",
                           onPressed: () {

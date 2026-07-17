@@ -57,6 +57,20 @@ That saved a wretch like me.
     _save();
   }
 
+  /// Permet de restaurer un morceau à une position précise
+  void insertSong(int index, Song song) {
+    final songs = [...state];
+
+    if (index < 0 || index > songs.length) {
+      songs.add(song);
+    } else {
+      songs.insert(index, song);
+    }
+
+    state = songs;
+    _save();
+  }
+
   void updateSong(int index, Song song) {
     final songs = [...state];
     songs[index] = song;

@@ -75,7 +75,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               itemCount: filteredSongs.length,
               itemBuilder: (context, index) {
                 final song = filteredSongs[index];
-
                 final originalIndex = songs.indexOf(song);
 
                 return Dismissible(
@@ -90,40 +89,25 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  confirmDismiss: (_) async {
-                    return await showDialog<bool>(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text("Supprimer le morceau"),
-                            content: Text(
-                              "Voulez-vous supprimer « ${song.title} » ?",
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, false),
-                                child: const Text("Annuler"),
-                              ),
-                              FilledButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, true),
-                                child: const Text("Supprimer"),
-                              ),
-                            ],
-                          ),
-                        ) ??
-                        false;
-                  },
                   onDismissed: (_) {
-                    ref
-                        .read(songProvider.notifier)
-                        .removeSong(originalIndex);
+                    ref.read(songProvider.notifier).removeSong(originalIndex);
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("${song.title} supprimé"),
-                      ),
-                    );
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text("${song.title} supprimé"),
+                          duration: const Duration(seconds: 4),
+                          action: SnackBarAction(
+                            label: "ANNULER",
+                            onPressed: () {
+                              ref
+                                  .read(songProvider.notifier)
+                                  .insertSong(originalIndex, song);
+                            },
+                          ),
+                        ),
+                      );
                   },
                   child: Card(
                     margin: const EdgeInsets.symmetric(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/menu_card.dart';
+import '../concert/concert_selector_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../library/library_screen.dart';
 import '../setlists/screens/setlists_screen.dart';
@@ -83,7 +84,14 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.mic,
               title: "Mode Concert",
               subtitle: "Défilement automatique",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ConcertSelectorScreen(),
+                  ),
+                );
+              },
             ),
 
             MenuCard(

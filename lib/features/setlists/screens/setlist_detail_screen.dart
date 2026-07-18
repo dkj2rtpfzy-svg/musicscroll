@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/song_provider.dart';
-import '../../concert/concert_screen.dart';
+import '../../concert/concert_playlist_screen.dart';
 import '../providers/setlist_provider.dart';
 
 class SetlistDetailScreen extends ConsumerWidget {
@@ -42,8 +42,8 @@ class SetlistDetailScreen extends ConsumerWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ConcertScreen(
-                      song: setlistSongs.first,
+                    builder: (_) => ConcertPlaylistScreen(
+                      songs: setlistSongs,
                     ),
                   ),
                 );

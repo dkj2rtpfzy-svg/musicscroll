@@ -1,19 +1,23 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../core/settings/app_settings.dart';
 import '../features/setlists/models/setlist.dart';
 import '../shared/models/song.dart';
 
 class StorageService {
   static const String songsBoxName = 'songs';
   static const String setlistsBoxName = 'setlists';
+  static const String settingsBoxName = 'settings';
 
   static Future<void> initialize() async {
     await Hive.openBox(songsBoxName);
     await Hive.openBox(setlistsBoxName);
+    await Hive.openBox(settingsBoxName);
   }
 
   static Box get _songsBox => Hive.box(songsBoxName);
   static Box get _setlistsBox => Hive.box(setlistsBoxName);
+  static Box get _settingsBox => Hive.box(settingsBoxName);
 
   // ===========================
   // SONGS
@@ -67,5 +71,28 @@ class StorageService {
         setlists[i].toMap(),
       );
     }
+  }
+
+  // ===========================
+  // SETTINGS
+  // ===========================
+
+  static AppSettings loadSettings() {
+    final map = _settingsBox.get('settings');
+
+    if (map == null) {
+      return AppSettings.defaults;
+    }
+
+    return AppSettings.fromMap(
+      Map<String, dynamic>.from(map),
+    );
+  }
+
+  static Future<void> saveSettings(AppSettings settings) async {
+    await _settingsBox.put(
+      'settings',
+      settings.toMap(),
+    );
   }
 }

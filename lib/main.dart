@@ -8,10 +8,7 @@ import 'service/storage_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialisation de Hive
   await Hive.initFlutter();
-
-  // Ouverture des Box
   await StorageService.initialize();
 
   runApp(

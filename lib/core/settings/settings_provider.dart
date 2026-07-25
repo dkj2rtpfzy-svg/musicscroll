@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../service/storage_service.dart';
+import '../service/storage_service.dart';
 import 'app_settings.dart';
 
 class SettingsNotifier extends StateNotifier<AppSettings> {

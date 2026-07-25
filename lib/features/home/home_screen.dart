@@ -6,6 +6,7 @@ import '../favorites/favorites_screen.dart';
 import '../library/library_screen.dart';
 import '../setlists/screens/setlists_screen.dart';
 import '../settings/settings_page.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -109,18 +110,18 @@ class HomeScreen extends StatelessWidget {
             ),
 
             MenuCard(
-  icon: Icons.settings,
-  title: "Réglages",
-  subtitle: "Préférences de l'application",
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const SettingsPage(),
-      ),
-    );
-  },
-),
+              icon: Icons.settings,
+              title: "Réglages",
+              subtitle: "Préférences de l'application",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

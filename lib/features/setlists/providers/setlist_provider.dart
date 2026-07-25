@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/setlist.dart';
-import '../../../service/storage_service.dart';
+import '../../../core/service/storage_service.dart';
 
 class SetlistNotifier extends StateNotifier<List<Setlist>> {
   SetlistNotifier() : super(StorageService.loadSetlists());

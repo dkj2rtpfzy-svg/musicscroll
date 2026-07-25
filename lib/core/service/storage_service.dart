@@ -1,8 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../core/settings/app_settings.dart';
-import '../features/setlists/models/setlist.dart';
-import '../shared/models/song.dart';
+import '../settings/app_settings.dart';
+import '../../features/setlists/models/setlist.dart';
+import '../../shared/models/song.dart';
 
 class StorageService {
   static const String songsBoxName = 'songs';

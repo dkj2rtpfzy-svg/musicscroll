@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../service/storage_service.dart';
+import '../core/service/storage_service.dart';
 import '../shared/models/song.dart';
 
 class SongNotifier extends StateNotifier<List<Song>> {

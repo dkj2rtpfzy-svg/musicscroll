@@ -6,6 +6,7 @@ import '../favorites/favorites_screen.dart';
 import '../library/library_screen.dart';
 import '../setlists/screens/setlists_screen.dart';
 import '../settings/settings_page.dart';
+import '../tuner/presentation/tuner_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -41,7 +42,7 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            Center(
+            const Center(
               child: Text(
                 "Powered by ALFAGA",
                 style: TextStyle(
@@ -90,6 +91,20 @@ class HomeScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (_) => const ConcertSelectorScreen(),
+                  ),
+                );
+              },
+            ),
+
+            MenuCard(
+              icon: Icons.tune,
+              title: "Accordeur",
+              subtitle: "Guitare • Basse • Ukulélé",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TunerScreen(),
                   ),
                 );
               },

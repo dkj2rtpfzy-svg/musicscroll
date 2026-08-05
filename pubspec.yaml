@@ -1,5 +1,5 @@
 name: musicscroll
-description: "MusicScroll"
+description: MusicScroll
 
 publish_to: 'none'
 
@@ -13,13 +13,26 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+
+  # Navigation
   go_router: ^17.3.0
+
+  # State management
   flutter_riverpod: ^2.6.1
+
+  # Screen awake
   wakelock_plus: ^1.6.1
 
+  # Storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   shared_preferences: ^2.3.2
+
+  # UI
+  flutter_svg: ^2.2.0
+  google_fonts: ^6.3.2
+  flutter_animate: ^4.5.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -28,3 +41,14 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # assets:
+  #   - assets/illustrations/
+  #   - assets/icons/
+
+  # fonts:
+  #   - family: Inter
+  #     fonts:
+  #       - asset: assets/fonts/Inter-Regular.ttf
+  #       - asset: assets/fonts/Inter-Bold.ttf
+  #         weight: 700

@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../shared/models/song.dart';
-
+import '../../shared/widgets/chord_pro_viewer.dart';
 class ConcertScreen extends StatefulWidget {
   final Song song;
 
@@ -236,16 +236,17 @@ class _ConcertScreenState extends State<ConcertScreen>
                       ),
                       const SizedBox(height: 40),
                     ],
-                    Text(
-                      widget.song.lyrics.isEmpty
-                          ? "Aucune parole disponible."
-                          : widget.song.lyrics,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: _lyricsFontSize,
-                        height: 1.8,
-                      ),
-                    ),
+                    Theme(
+  data: Theme.of(context).copyWith(
+    textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        ),
+  ),
+  child: ChordProViewer(
+    lyrics: widget.song.lyrics,
+  ),
+),
                   ],
                 ),
               ),

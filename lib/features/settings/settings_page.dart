@@ -21,44 +21,32 @@ class SettingsPage extends ConsumerWidget {
           _buildSection(
             title: "Apparence",
             icon: Icons.palette_outlined,
-            child: Column(
-              children: [
-                RadioListTile<ThemeMode>(
-                  title: const Text("Automatique"),
-                  value: ThemeMode.system,
-                  groupValue: settings.themeMode,
-                  onChanged: (value) {
-                    if (value != null) {
-                      notifier.setThemeMode(value);
-                    }
-                  },
-                ),
-                RadioListTile<ThemeMode>(
-                  title: const Text("Clair"),
-                  value: ThemeMode.light,
-                  groupValue: settings.themeMode,
-                  onChanged: (value) {
-                    if (value != null) {
-                      notifier.setThemeMode(value);
-                    }
-                  },
-                ),
-                RadioListTile<ThemeMode>(
-                  title: const Text("Sombre"),
-                  value: ThemeMode.dark,
-                  groupValue: settings.themeMode,
-                  onChanged: (value) {
-                    if (value != null) {
-                      notifier.setThemeMode(value);
-                    }
-                  },
-                ),
-              ],
+            child: RadioGroup<ThemeMode>(
+              groupValue: settings.themeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  notifier.setThemeMode(value);
+                }
+              },
+              child: const Column(
+                children: [
+                  RadioListTile<ThemeMode>(
+                    title: Text("Automatique"),
+                    value: ThemeMode.system,
+                  ),
+                  RadioListTile<ThemeMode>(
+                    title: Text("Clair"),
+                    value: ThemeMode.light,
+                  ),
+                  RadioListTile<ThemeMode>(
+                    title: Text("Sombre"),
+                    value: ThemeMode.dark,
+                  ),
+                ],
+              ),
             ),
           ),
-
           const SizedBox(height: 16),
-
           _buildSection(
             title: "Concert",
             icon: Icons.mic,
@@ -68,9 +56,7 @@ class SettingsPage extends ConsumerWidget {
               onChanged: notifier.setKeepScreenAwake,
             ),
           ),
-
           const SizedBox(height: 16),
-
           _buildSection(
             title: "Défilement",
             icon: Icons.swipe,
@@ -89,9 +75,7 @@ class SettingsPage extends ConsumerWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
           _buildSection(
             title: "À propos",
             icon: Icons.info_outline,

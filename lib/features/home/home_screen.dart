@@ -13,47 +13,66 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("MusicScroll"),
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
           children: [
-            const SizedBox(height: 20),
-
-            const Icon(
-              Icons.music_note,
-              size: 90,
-            ),
-
-            const SizedBox(height: 16),
-
-            const Center(
-              child: Text(
-                "MusicScroll",
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  colors: isDark
+                      ? const [
+                          Color(0xFF2D2D2D),
+                          Color(0xFF1A1A1A),
+                        ]
+                      : [
+                          theme.colorScheme.primary.withValues(alpha: 0.12),
+                          theme.colorScheme.primary.withValues(alpha: 0.04),
+                        ],
                 ),
               ),
-            ),
-
-            const SizedBox(height: 8),
-
-            const Center(
-              child: Text(
-                "Powered by ALFAGA",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.music_note_rounded,
+                    size: 54,
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    "MusicScroll",
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Prêt à jouer ?\nRetrouvez votre bibliothèque et tous vos outils musicaux.",
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.grey,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            const SizedBox(height: 40),
-
+            const SizedBox(height: 32),
+            Text(
+              "Accès rapide",
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 18),
             MenuCard(
               icon: Icons.library_music,
               title: "Bibliothèque",
@@ -67,7 +86,6 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-
             MenuCard(
               icon: Icons.star,
               title: "Favoris",
@@ -81,7 +99,6 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-
             MenuCard(
               icon: Icons.mic,
               title: "Mode Concert",
@@ -95,7 +112,6 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-
             MenuCard(
               icon: Icons.tune,
               title: "Accordeur",
@@ -104,12 +120,11 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => TunerScreen(),
+                    builder: (_) => const TunerScreen(),
                   ),
                 );
               },
             ),
-
             MenuCard(
               icon: Icons.queue_music,
               title: "Setlists",
@@ -123,7 +138,6 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-
             MenuCard(
               icon: Icons.settings,
               title: "Réglages",

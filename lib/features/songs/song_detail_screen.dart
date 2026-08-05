@@ -5,7 +5,7 @@ import '../../shared/models/song.dart';
 import '../../features/concert/concert_screen.dart';
 import '../../features/setlists/widgets/select_setlist_dialog.dart';
 import 'song_editor_screen.dart';
-
+import '../../shared/widgets/chord_pro_viewer.dart';
 class SongDetailScreen extends ConsumerWidget {
   final Song song;
   final int songIndex;
@@ -144,14 +144,9 @@ class SongDetailScreen extends ConsumerWidget {
 
           const SizedBox(height: 12),
 
-          Text(
-            song.lyrics.isEmpty
-                ? "Aucune parole disponible."
-                : song.lyrics,
-            style: const TextStyle(
-              fontSize: 18,
-              height: 1.6,
-            ),
+         ChordProViewer(
+  lyrics: song.lyrics,
+
           ),
         ],
       ),

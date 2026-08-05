@@ -1,45 +1,34 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
+import '../core/pitch_converter.dart';
+
 class TunerService extends ChangeNotifier {
-  String _note = "--";
-  double _cents = 0;
-  bool _running = false;
+  PitchResult _result = const PitchResult(
+    note: '--',
+    frequency: 0,
+    targetFrequency: 0,
+    cents: 0,
+  );
 
-  Timer? _timer;
+  PitchResult get result => _result;
 
-  String get note => _note;
-  double get cents => _cents;
-  bool get isRunning => _running;
+  String get note => _result.note;
 
-  void start() {
-    if (_running) return;
+  double get frequency => _result.frequency;
 
-    _running = true;
+  double get cents => _result.cents;
 
-    _timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      _cents += 5;
+  bool get isRunning => false;
 
-      if (_cents > 50) {
-        _cents = -50;
-      }
-
-      notifyListeners();
-    });
-
-    notifyListeners();
+  Future<void> start() async {
+    // Le moteur audio sera ajouté dans un prochain sprint.
   }
 
-  void stop() {
-    _timer?.cancel();
-    _running = false;
-    notifyListeners();
-  }
+  Future<void> stop() async {}
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  /// Permet de tester l'interface sans micro.
+  void simulate(double frequency) {
+    _result = PitchConverter.fromFrequency(frequency);
+    notifyListeners();
   }
 }

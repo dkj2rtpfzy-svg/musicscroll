@@ -1,85 +1,92 @@
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+import 'app_text_styles.dart';
+
 class AppTheme {
-  static const _seedColor = Color(0xFF2979FF);
+  AppTheme._();
 
-  static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: _seedColor,
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.light,
-    ),
 
-    appBarTheme: const AppBarTheme(
-      centerTitle: true,
-      elevation: 0,
-    ),
-
-    cardTheme: CardThemeData(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primary,
+        secondary: AppColors.secondary,
+        surface: Colors.white,
+        error: AppColors.error,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
+
+      scaffoldBackgroundColor: Colors.white,
+
+      fontFamily: AppTextStyles.fontFamily,
+
+      textTheme: const TextTheme(
+        displayLarge: AppTextStyles.display,
+        headlineLarge: AppTextStyles.h1,
+        headlineMedium: AppTextStyles.h2,
+        headlineSmall: AppTextStyles.h3,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.body,
+        bodySmall: AppTextStyles.bodySmall,
+        labelMedium: AppTextStyles.label,
       ),
-    ),
 
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+      appBarTheme: const AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
-    ),
 
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: _seedColor,
-      foregroundColor: Colors.white,
-    ),
-  );
+      dividerColor: AppColors.divider,
+    );
+  }
 
-  static ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: _seedColor,
+  static ThemeData get darkTheme {
+    return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
-    ),
 
-    scaffoldBackgroundColor: const Color(0xFF101114),
+      scaffoldBackgroundColor: AppColors.background,
 
-    appBarTheme: const AppBarTheme(
-      centerTitle: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
-
-    cardTheme: CardThemeData(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.primary,
+        secondary: AppColors.secondary,
+        surface: AppColors.surface,
+        error: AppColors.error,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-    ),
 
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: const Color(0xFF1B1D21),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-    ),
+      fontFamily: AppTextStyles.fontFamily,
 
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: _seedColor,
-      foregroundColor: Colors.white,
-    ),
-  );
+      textTheme: const TextTheme(
+        displayLarge: AppTextStyles.display,
+        headlineLarge: AppTextStyles.h1,
+        headlineMedium: AppTextStyles.h2,
+        headlineSmall: AppTextStyles.h3,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.body,
+        bodySmall: AppTextStyles.bodySmall,
+        labelMedium: AppTextStyles.label,
+      ),
+
+      appBarTheme: const AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.textPrimary,
+      ),
+
+      dividerColor: AppColors.divider,
+
+      cardTheme: CardThemeData(
+        color: AppColors.card,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
 }

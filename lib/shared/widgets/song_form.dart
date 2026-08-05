@@ -29,49 +29,94 @@ class SongForm extends StatelessWidget {
           controller: titleController,
           decoration: const InputDecoration(
             labelText: "Titre",
+            border: OutlineInputBorder(),
           ),
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
         TextField(
           controller: artistController,
           decoration: const InputDecoration(
             labelText: "Artiste",
+            border: OutlineInputBorder(),
           ),
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
-        TextField(
-          controller: keyController,
-          decoration: const InputDecoration(
-            labelText: "Tonalité",
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: keyController,
+                decoration: const InputDecoration(
+                  labelText: "Tonalité",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: TextField(
+                controller: bpmController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Tempo",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 24),
+
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  "Format ChordPro",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "[C]Quand il me prend dans ses bras\n"
+                  "[Am]Je vois la vie en rose\n"
+                  "[F]Il me dit des mots d'amour\n"
+                  "[G]Des mots de tous les jours",
+                ),
+              ],
+            ),
           ),
         ),
 
-        const SizedBox(height: 20),
-
-        TextField(
-          controller: bpmController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: "Tempo (BPM)",
-          ),
-        ),
-
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
         TextField(
           controller: lyricsController,
-          maxLines: 12,
+          minLines: 18,
+          maxLines: null,
+          style: const TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 16,
+            height: 1.5,
+          ),
           decoration: const InputDecoration(
-            labelText: "Paroles",
+            labelText: "Paroles / Accords",
+            hintText:
+                "Écrivez votre morceau au format ChordPro.",
+            border: OutlineInputBorder(),
             alignLabelWithHint: true,
           ),
         ),
 
-        const SizedBox(height: 30),
+        const SizedBox(height: 24),
 
         FilledButton.icon(
           onPressed: onSave,

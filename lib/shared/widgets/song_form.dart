@@ -72,32 +72,6 @@ class SongForm extends StatelessWidget {
 
         const SizedBox(height: 24),
 
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Format ChordPro",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "[C]Quand il me prend dans ses bras\n"
-                  "[Am]Je vois la vie en rose\n"
-                  "[F]Il me dit des mots d'amour\n"
-                  "[G]Des mots de tous les jours",
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 16),
-
         TextField(
           controller: lyricsController,
           minLines: 18,
@@ -109,8 +83,6 @@ class SongForm extends StatelessWidget {
           ),
           decoration: const InputDecoration(
             labelText: "Paroles / Accords",
-            hintText:
-                "Écrivez votre morceau au format ChordPro.",
             border: OutlineInputBorder(),
             alignLabelWithHint: true,
           ),

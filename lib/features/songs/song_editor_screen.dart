@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/song_provider.dart';
 import '../../shared/models/song.dart';
 import '../../shared/widgets/song_form.dart';
-
+import '../editor/editor_screen.dart';
 class SongEditorScreen extends ConsumerStatefulWidget {
   final Song song;
   final int songIndex;
@@ -74,9 +74,23 @@ class _SongEditorScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Modifier le morceau"),
-      ),
+     appBar: AppBar(
+  title: const Text("Modifier le morceau"),
+  actions: [
+    IconButton(
+      tooltip: "Nouvel éditeur",
+      icon: const Icon(Icons.auto_awesome),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const EditorScreen(),
+          ),
+        );
+      },
+    ),
+  ],
+),
       body: SongForm(
         titleController: titleController,
         artistController: artistController,

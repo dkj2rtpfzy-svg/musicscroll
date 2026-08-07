@@ -24,7 +24,7 @@ class ChordProViewer extends StatelessWidget {
       children: lines
           .map(
             (line) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 4),
               child: _buildLine(line),
             ),
           )
@@ -78,17 +78,25 @@ class ChordProViewer extends StatelessWidget {
     lyricsBuffer.write(line.substring(index));
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(children: chords),
-        Text(
-          lyricsBuffer.toString(),
-          style: const TextStyle(
-            fontSize: 18,
-            height: 1.6,
-          ),
-        ),
-      ],
-    );
+  crossAxisAlignment: CrossAxisAlignment.start,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Row(
+      children: chords,
+    ),
+
+    const SizedBox(height: 2),
+
+    Text(
+      lyricsBuffer.toString(),
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 28,
+        height: 1.2,
+        fontFamily: 'Courier',
+      ),
+    ),
+  ],
+);
   }
 }

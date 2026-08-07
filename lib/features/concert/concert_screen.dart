@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../shared/models/song.dart';
@@ -28,7 +29,7 @@ class _ConcertScreenState extends State<ConcertScreen>
   late final Ticker _ticker;
 
   Duration? _lastElapsed;
-
+  Timer? _controlsTimer;
   // Pixels par seconde
   double _scrollSpeed = 50;
 
@@ -70,7 +71,21 @@ class _ConcertScreenState extends State<ConcertScreen>
       _scrollController.jumpTo(nextOffset);
     });
   }
+void _showControlsTemporarily() {
+  setState(() {
+    _showControls = true;
+  });
 
+  _controlsTimer?.cancel();
+
+  _controlsTimer = Timer(const Duration(seconds: 3), () {
+    if (!mounted) return;
+
+    setState(() {
+      _showControls = false;
+    });
+  });
+}
   void _togglePlay() {
     if (_isPlaying) {
       _ticker.stop();
@@ -127,7 +142,7 @@ class _ConcertScreenState extends State<ConcertScreen>
   void dispose() {
     // Restaure le comportement normal du téléphone
     WakelockPlus.disable();
-
+    _controlsTimer?.cancel();
     _ticker.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -173,11 +188,17 @@ class _ConcertScreenState extends State<ConcertScreen>
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () {
-            setState(() {
-              _showControls = !_showControls;
-            });
-          },
+         onTap: () {
+  if (_showControls) {
+    _controlsTimer?.cancel();
+
+    setState(() {
+      _showControls = false;
+    });
+  } else {
+    _showControlsTemporarily();
+  }
+},
           child: Column(
             children: [
               if (_showControls)
@@ -215,27 +236,8 @@ class _ConcertScreenState extends State<ConcertScreen>
                   controller: _scrollController,
                   padding: const EdgeInsets.all(24),
                   children: [
-                    if (_showControls) ...[
-                      Text(
-                        widget.song.title,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 38,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.song.artist,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 22,
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                    ],
+                   if (_showControls)
+  const SizedBox(height: 12), 
                     Theme(
   data: Theme.of(context).copyWith(
     textTheme: Theme.of(context).textTheme.apply(

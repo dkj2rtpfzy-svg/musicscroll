@@ -18,16 +18,14 @@ abstract final class AppColors {
   // Primary (vert emeraude MusicScroll)
   // =========================
 
-  static const Color primary = Color(0xFF2ECC71);
-  static const Color primaryLight = Color(0xFF67C0FF);
-  static const Color primaryDark = Color(0xFF0077D9);
-
+  static const Color primary = Color(0xFF457CE1);
+  static const Color primaryLight = Color(0xFF6F9BF0);
+  static const Color primaryDark = Color(0xFF2F63C3);
   // =========================
   // Secondary
   // =========================
 
-  static const Color secondary = Color(0xFF00C878);
-
+  static const Color secondary = primary;
   // =========================
   // Status
   // =========================
@@ -70,7 +68,7 @@ abstract final class AppColors {
   // Instrument colors
   // =========================
 
-  static const Color guitar = Color(0xFF00C878);
+  static const Color guitar = primary;
 
   static const Color bass = primary;
 

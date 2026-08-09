@@ -5,13 +5,14 @@ class MenuCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-
+  final Color? color;
   const MenuCard({
     super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.color,
   });
 
   @override
@@ -41,14 +42,14 @@ class MenuCard extends StatelessWidget {
                   width: 58,
                   height: 58,
                   decoration: BoxDecoration(
-                    color: colorScheme.primary.withValues(
-                      alpha: 0.12,
-                    ),
+                    color: (color ?? colorScheme.primary).withValues(
+  alpha: 0.12,
+),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     icon,
-                    color: colorScheme.primary,
+                    color: color ?? colorScheme.primary,
                     size: 30,
                   ),
                 ),

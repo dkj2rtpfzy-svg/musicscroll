@@ -103,6 +103,7 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.mic,
               title: "Mode Concert",
               subtitle: "Défilement automatique",
+                color: const Color(0xFFFFFF62),
               onTap: () {
                 Navigator.push(
                   context,

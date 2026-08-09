@@ -6,6 +6,7 @@ import '../../features/concert/concert_screen.dart';
 import '../../features/setlists/widgets/select_setlist_dialog.dart';
 import 'song_editor_screen.dart';
 import '../../shared/widgets/chord_pro_viewer.dart';
+
 class SongDetailScreen extends ConsumerWidget {
   final Song song;
   final int songIndex;
@@ -49,7 +50,9 @@ class SongDetailScreen extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+
           const SizedBox(height: 8),
+
           Text(
             song.artist,
             style: TextStyle(
@@ -57,6 +60,7 @@ class SongDetailScreen extends ConsumerWidget {
               color: Colors.grey.shade400,
             ),
           ),
+
           const SizedBox(height: 24),
 
           Row(
@@ -81,7 +85,7 @@ class SongDetailScreen extends ConsumerWidget {
               Expanded(
                 child: FilledButton.icon(
                   style: FilledButton.styleFrom(
-                    backgroundColor: Colors.amber,
+                    backgroundColor: const Color(0xFFFFFF62),
                     foregroundColor: Colors.black,
                   ),
                   onPressed: () {
@@ -128,7 +132,9 @@ class SongDetailScreen extends ConsumerWidget {
                 color: Colors.amber,
               ),
               title: const Text("Favori"),
-              trailing: Text(song.favorite ? "Oui" : "Non"),
+              trailing: Text(
+                song.favorite ? "Oui" : "Non",
+              ),
             ),
           ),
 
@@ -144,9 +150,8 @@ class SongDetailScreen extends ConsumerWidget {
 
           const SizedBox(height: 12),
 
-         ChordProViewer(
-  lyrics: song.lyrics,
-
+          ChordProViewer(
+            lyrics: song.lyrics,
           ),
         ],
       ),

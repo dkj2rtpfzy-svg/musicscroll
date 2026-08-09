@@ -5,6 +5,7 @@ import '../../providers/song_provider.dart';
 import '../../shared/models/song.dart';
 import '../../shared/widgets/song_form.dart';
 import '../editor/editor_screen.dart';
+
 class SongEditorScreen extends ConsumerStatefulWidget {
   final Song song;
   final int songIndex;
@@ -32,12 +33,22 @@ class _SongEditorScreenState
   void initState() {
     super.initState();
 
-    titleController = TextEditingController(text: widget.song.title);
-    artistController = TextEditingController(text: widget.song.artist);
-    keyController = TextEditingController(text: widget.song.key);
+    titleController = TextEditingController(
+      text: widget.song.title,
+    );
+
+    artistController = TextEditingController(
+      text: widget.song.artist,
+    );
+
+    keyController = TextEditingController(
+      text: widget.song.key,
+    );
+
     bpmController = TextEditingController(
       text: widget.song.bpm.toString(),
     );
+
     lyricsController = TextEditingController(
       text: widget.song.lyrics,
     );
@@ -50,6 +61,7 @@ class _SongEditorScreenState
     keyController.dispose();
     bpmController.dispose();
     lyricsController.dispose();
+
     super.dispose();
   }
 
@@ -58,7 +70,8 @@ class _SongEditorScreenState
       title: titleController.text,
       artist: artistController.text,
       key: keyController.text,
-      bpm: int.tryParse(bpmController.text) ?? widget.song.bpm,
+      bpm: int.tryParse(bpmController.text) ??
+          widget.song.bpm,
       lyrics: lyricsController.text,
     );
 
@@ -74,23 +87,30 @@ class _SongEditorScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
-  title: const Text("Modifier le morceau"),
-  actions: [
-    IconButton(
-      tooltip: "Nouvel éditeur",
-      icon: const Icon(Icons.auto_awesome),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const EditorScreen(),
+      appBar: AppBar(
+        title: const Text("Modifier le morceau"),
+        actions: [
+          IconButton(
+            tooltip: "Éditeur d'accords",
+            icon: const Icon(Icons.auto_awesome),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EditorScreen(
+                    initialLyrics: lyricsController.text,
+                    onSave: (updatedLyrics) {
+                      setState(() {
+                        lyricsController.text = updatedLyrics;
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
           ),
-        );
-      },
-    ),
-  ],
-),
+        ],
+      ),
       body: SongForm(
         titleController: titleController,
         artistController: artistController,

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
 class EditorScreen extends StatefulWidget {
-  const EditorScreen({super.key});
+  final String initialLyrics;
+  final ValueChanged<String> onSave;
+
+  const EditorScreen({
+    super.key,
+    required this.initialLyrics,
+    required this.onSave,
+  });
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
 }
 
 class _EditorScreenState extends State<EditorScreen> {
-  final TextEditingController _controller = TextEditingController();
-
-  final List<String> _chords = [];
+  late final TextEditingController _controller;
 
   final List<String> _available = const [
     "C",
@@ -29,6 +34,21 @@ class _EditorScreenState extends State<EditorScreen> {
     "Bm",
   ];
 
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = TextEditingController(
+      text: widget.initialLyrics,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Future<void> _addChord() async {
     final chord = await showDialog<String>(
       context: context,
@@ -40,12 +60,18 @@ class _EditorScreenState extends State<EditorScreen> {
             child: GridView.count(
               shrinkWrap: true,
               crossAxisCount: 4,
-              children: _available.map((e) {
+              children: _available.map((chord) {
                 return TextButton(
                   onPressed: () {
-                    Navigator.pop(context, e);
+                    Navigator.pop(context, chord);
                   },
-                  child: Text(e),
+                  child: Text(
+                    chord,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                 );
               }).toList(),
             ),
@@ -54,54 +80,65 @@ class _EditorScreenState extends State<EditorScreen> {
       },
     );
 
-    if (chord != null) {
-      setState(() {
-        _chords.add(chord);
-      });
-    }
+    if (chord == null) return;
+
+    final selection = _controller.selection;
+
+    if (!selection.isValid) return;
+
+    final start = selection.start;
+
+    final text = _controller.text;
+
+    final newText =
+        '${text.substring(0, start)}[$chord]${text.substring(start)}';
+
+    final newCursorPosition = start + chord.length + 2;
+
+    _controller.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(
+        offset: newCursorPosition,
+      ),
+    );
+  }
+
+  void _save() {
+    widget.onSave(_controller.text);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Nouvel éditeur"),
+        title: const Text("Éditeur d'accords"),
+        actions: [
+          IconButton(
+            tooltip: "Enregistrer",
+            icon: const Icon(Icons.save),
+            onPressed: _save,
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
+        tooltip: "Ajouter un accord",
         onPressed: _addChord,
         child: const Icon(Icons.add),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            Wrap(
-              spacing: 8,
-              children: _chords
-                  .map(
-                    (e) => Chip(
-                      label: Text(e),
-                    ),
-                  )
-                  .toList(),
-            ),
-
-            const SizedBox(height: 20),
-
-            Expanded(
-              child: TextField(
-                controller: _controller,
-                expands: true,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Écrivez vos paroles...",
-                ),
-              ),
-            ),
-          ],
+        child: TextField(
+          controller: _controller,
+          expands: true,
+          maxLines: null,
+          minLines: null,
+          textAlignVertical: TextAlignVertical.top,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: "Écrivez vos paroles...",
+            alignLabelWithHint: true,
+          ),
         ),
       ),
     );

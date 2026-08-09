@@ -15,7 +15,10 @@ class ChordProViewer extends StatelessWidget {
     if (lyrics.trim().isEmpty) {
       return const Text(
         "Aucune parole disponible.",
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.white,
+        ),
       );
     }
 
@@ -38,108 +41,111 @@ class ChordProViewer extends StatelessWidget {
     final reg = RegExp(r'\[([^\]]+)\]');
     final matches = reg.allMatches(line).toList();
 
+    // Ligne sans accord.
     if (matches.isEmpty) {
       return Text(
         line,
         style: TextStyle(
           color: Colors.white,
           fontSize: fontSize,
-          height: 1.8,
+          height: 1.2,
           fontFamily: 'Courier',
         ),
       );
     }
 
-    final segments = <Widget>[];
-    int index = 0;
+    /*
+     * On construit deux lignes de même longueur :
+     *
+     * Ligne du haut :
+     *
+     *        G                 Em
+     *
+     * Ligne du bas :
+     *
+     * Well, I heard there was a secret chord
+     *
+     * Comme les deux utilisent une police monospace,
+     * les positions horizontales correspondent.
+     */
+
+    final chordLine = StringBuffer();
+    final lyricsLine = StringBuffer();
+
+    int sourceIndex = 0;
+    
 
     for (final match in matches) {
       // Texte situé avant l'accord.
-      final textBefore = line.substring(index, match.start);
+      final textBefore =
+          line.substring(sourceIndex, match.start);
 
-      if (textBefore.isNotEmpty) {
-        segments.add(
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: fontSize * 0.95,
-              ),
-              Text(
-                textBefore,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: fontSize,
-                  height: 1.2,
-                  fontFamily: 'Courier',
-                ),
-              ),
-            ],
+      lyricsLine.write(textBefore);
+
+      // Même nombre de positions vides dans la ligne des accords.
+      chordLine.write(' ' * textBefore.length);
+
+      final chord = match.group(1)!;
+
+      /*
+       * Place l'accord exactement à la position où
+       * commence le texte qui suit.
+       */
+      chordLine.write(chord);
+
+      // On avance dans la chaîne source.
+      sourceIndex = match.end;
+
+     
+    }
+
+    // Dernier morceau de paroles.
+    final remaining = line.substring(sourceIndex);
+
+    lyricsLine.write(remaining);
+
+    // On complète la ligne des accords pour avoir
+    // au minimum la même largeur que les paroles.
+    final chordLength = chordLine.length;
+    final lyricsLength = lyricsLine.length;
+
+    if (chordLength < lyricsLength) {
+      chordLine.write(
+        ' ' * (lyricsLength - chordLength),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          chordLine.toString(),
+          maxLines: 1,
+          softWrap: false,
+          style: TextStyle(
+            color: const Color(0xFFFFFF62),
+            fontSize: fontSize * 0.79,
+            fontWeight: FontWeight.bold,
+            height: 1.0,
+            fontFamily: 'Courier',
+            letterSpacing: 0.5,
           ),
-        );
-      }
-
-      // Accord situé exactement à cet endroit de la phrase.
-      segments.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              match.group(1)!,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFFFFFF62),
-                fontSize: fontSize * 0.79,
-                letterSpacing: 0.5,
-                height: 1.0,
-              ),
-            ),
-            SizedBox(
-              height: fontSize * 0.2,
-            ),
-          ],
         ),
-      );
 
-      index = match.end;
-    }
+        const SizedBox(height: 2),
 
-    // Texte situé après le dernier accord.
-    final textAfter = line.substring(index);
-
-    if (textAfter.isNotEmpty) {
-      segments.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: fontSize * 0.95,
-            ),
-            Text(
-              textAfter,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: fontSize,
-                height: 1.2,
-                fontFamily: 'Courier',
-              ),
-            ),
-          ],
+        Text(
+          lyricsLine.toString(),
+          softWrap: false,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: fontSize,
+            height: 1.2,
+            fontFamily: 'Courier',
+          ),
         ),
-      );
-    }
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: segments,
-      ),
+      ],
     );
   }
 }

@@ -1,3 +1,4 @@
+
 import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
@@ -11,6 +12,7 @@ class SongPdfService {
     required String songKey,
     required int bpm,
     required String lyrics,
+    bool showChords = true,
   }) async {
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async {
@@ -20,6 +22,7 @@ class SongPdfService {
           songKey: songKey,
           bpm: bpm,
           lyrics: lyrics,
+          showChords: showChords,
         );
       },
     );
@@ -31,6 +34,7 @@ class SongPdfService {
     required String songKey,
     required int bpm,
     required String lyrics,
+    required bool showChords,
   }) async {
     final document = pw.Document();
 
@@ -79,7 +83,11 @@ class SongPdfService {
             ),
             pw.Divider(),
             pw.SizedBox(height: 10),
-            ...lines.map(_buildChordProLine),
+            ...lines.map(
+              (line) => showChords
+                  ? _buildChordProLine(line)
+                  : _buildLyricsOnlyLine(line),
+            ),
           ];
         },
       ),
@@ -88,11 +96,28 @@ class SongPdfService {
     return document.save();
   }
 
+  static pw.Widget _buildLyricsOnlyLine(String line) {
+    final lyrics = line.replaceAll(
+      RegExp(r'\[([^\]]+)\]'),
+      '',
+    );
+
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 8),
+      child: pw.Text(
+        lyrics,
+        style: pw.TextStyle(
+          fontSize: 12,
+          font: pw.Font.courier(),
+        ),
+      ),
+    );
+  }
+
   static pw.Widget _buildChordProLine(String line) {
     final reg = RegExp(r'\[([^\]]+)\]');
     final matches = reg.allMatches(line).toList();
 
-    // Ligne sans accord.
     if (matches.isEmpty) {
       return pw.Padding(
         padding: const pw.EdgeInsets.only(bottom: 8),

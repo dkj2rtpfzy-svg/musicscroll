@@ -6,6 +6,7 @@ import '../../features/concert/concert_screen.dart';
 import '../../features/setlists/widgets/select_setlist_dialog.dart';
 import 'song_editor_screen.dart';
 import '../../shared/widgets/chord_pro_viewer.dart';
+import '../print/services/song_pdf_service.dart';
 
 class SongDetailScreen extends ConsumerWidget {
   final Song song;
@@ -104,7 +105,24 @@ class SongDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
+          const SizedBox(height: 12),
 
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                SongPdfService.printSong(
+                  title: song.title,
+                  artist: song.artist,
+                  songKey: song.key,
+                  bpm: song.bpm,
+                  lyrics: song.lyrics,
+                );
+              },
+              icon: const Icon(Icons.print),
+              label: const Text("Imprimer / PDF"),
+            ),
+          ),
           const SizedBox(height: 24),
 
           Card(

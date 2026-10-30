@@ -21,12 +21,12 @@ class TunerService extends ChangeNotifier {
   bool get isRunning => false;
 
   Future<void> start() async {
-    // Le moteur audio sera ajouté dans un prochain sprint.
+    // Le moteur audio sera connecté dans l'étape suivante.
   }
 
   Future<void> stop() async {}
 
-  /// Permet de tester l'interface sans micro.
+  /// Permet de tester l'interface sans microphone.
   void simulate(double frequency) {
     _result = PitchConverter.fromFrequency(frequency);
     notifyListeners();

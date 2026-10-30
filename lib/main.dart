@@ -1,11 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app/app.dart';
 import 'core/service/storage_service.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://cmmqtfnfrkacmaitomhs.supabase.co',
+    publishableKey: 'REMPLACE_PAR_TA_CLE_PUBLISHABLE',
+  );
 
   await Hive.initFlutter();
   await StorageService.initialize();

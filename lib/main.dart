@@ -12,7 +12,7 @@ Future<void> main() async {
 
   await Supabase.initialize(
     url: 'https://cmmqtfnfrkacmaitomhs.supabase.co',
-    publishableKey: 'REMPLACE_PAR_TA_CLE_PUBLISHABLE',
+    publishableKey: 'sb_publishable_grQuX2Rhk0eJVxJzeQJtMg_fF9iU68V',
   );
 
   await Hive.initFlutter();

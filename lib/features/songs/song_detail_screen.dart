@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,7 +9,7 @@ import 'song_editor_screen.dart';
 import '../../shared/widgets/chord_pro_viewer.dart';
 import '../print/services/song_pdf_service.dart';
 
-class SongDetailScreen extends ConsumerWidget {
+class SongDetailScreen extends ConsumerStatefulWidget {
   final Song song;
   final int songIndex;
 
@@ -19,7 +20,47 @@ class SongDetailScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SongDetailScreen> createState() => _SongDetailScreenState();
+}
+
+class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
+  bool _isPrinting = false;
+
+  Future<void> _printSong() async {
+    if (_isPrinting) return;
+
+    setState(() => _isPrinting = true);
+
+    try {
+      await SongPdfService.printSong(
+        title: widget.song.title,
+        artist: widget.song.artist,
+        songKey: widget.song.key,
+        bpm: widget.song.bpm,
+        lyrics: widget.song.lyrics,
+      );
+    } catch (error, stackTrace) {
+      debugPrint('Erreur impression MusicScroll : $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Impossible d'ouvrir l'impression."),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPrinting = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final song = widget.song;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(song.title),
@@ -33,7 +74,7 @@ class SongDetailScreen extends ConsumerWidget {
                 MaterialPageRoute(
                   builder: (_) => SongEditorScreen(
                     song: song,
-                    songIndex: songIndex,
+                    songIndex: widget.songIndex,
                   ),
                 ),
               );
@@ -51,9 +92,7 @@ class SongDetailScreen extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 8),
-
           Text(
             song.artist,
             style: TextStyle(
@@ -61,9 +100,7 @@ class SongDetailScreen extends ConsumerWidget {
               color: Colors.grey.shade400,
             ),
           ),
-
           const SizedBox(height: 24),
-
           Row(
             children: [
               Expanded(
@@ -80,9 +117,7 @@ class SongDetailScreen extends ConsumerWidget {
                   label: const Text("Setlist"),
                 ),
               ),
-
               const SizedBox(width: 12),
-
               Expanded(
                 child: FilledButton.icon(
                   style: FilledButton.styleFrom(
@@ -93,9 +128,7 @@ class SongDetailScreen extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ConcertScreen(
-                          song: song,
-                        ),
+                        builder: (_) => ConcertScreen(song: song),
                       ),
                     );
                   },
@@ -106,25 +139,23 @@ class SongDetailScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 12),
-
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () {
-                SongPdfService.printSong(
-                  title: song.title,
-                  artist: song.artist,
-                  songKey: song.key,
-                  bpm: song.bpm,
-                  lyrics: song.lyrics,
-                );
-              },
-              icon: const Icon(Icons.print),
-              label: const Text("Imprimer / PDF"),
+              onPressed: _isPrinting ? null : _printSong,
+              icon: _isPrinting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.print),
+              label: Text(
+                _isPrinting ? "Préparation..." : "Imprimer / PDF",
+              ),
             ),
           ),
           const SizedBox(height: 24),
-
           Card(
             child: ListTile(
               leading: const Icon(Icons.music_note),
@@ -132,7 +163,6 @@ class SongDetailScreen extends ConsumerWidget {
               trailing: Text(song.key),
             ),
           ),
-
           Card(
             child: ListTile(
               leading: const Icon(Icons.speed),
@@ -140,24 +170,17 @@ class SongDetailScreen extends ConsumerWidget {
               trailing: Text("${song.bpm} BPM"),
             ),
           ),
-
           Card(
             child: ListTile(
               leading: Icon(
-                song.favorite
-                    ? Icons.star
-                    : Icons.star_border,
+                song.favorite ? Icons.star : Icons.star_border,
                 color: Colors.amber,
               ),
               title: const Text("Favori"),
-              trailing: Text(
-                song.favorite ? "Oui" : "Non",
-              ),
+              trailing: Text(song.favorite ? "Oui" : "Non"),
             ),
           ),
-
           const SizedBox(height: 30),
-
           const Text(
             "Paroles",
             style: TextStyle(
@@ -165,12 +188,8 @@ class SongDetailScreen extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 12),
-
-          ChordProViewer(
-            lyrics: song.lyrics,
-          ),
+          ChordProViewer(lyrics: song.lyrics),
         ],
       ),
     );

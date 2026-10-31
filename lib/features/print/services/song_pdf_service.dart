@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
@@ -15,6 +14,7 @@ class SongPdfService {
     bool showChords = true,
   }) async {
     await Printing.layoutPdf(
+      dynamicLayout: false,
       onLayout: (PdfPageFormat format) async {
         return _buildPdf(
           title: title,
@@ -48,18 +48,12 @@ class SongPdfService {
           return [
             pw.Text(
               title,
-              style: pw.TextStyle(
-                fontSize: 24,
-                fontWeight: pw.FontWeight.bold,
-              ),
+              style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 6),
             pw.Text(
               artist,
-              style: const pw.TextStyle(
-                fontSize: 14,
-                color: PdfColors.grey700,
-              ),
+              style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey700),
             ),
             pw.SizedBox(height: 14),
             pw.Row(
@@ -97,19 +91,13 @@ class SongPdfService {
   }
 
   static pw.Widget _buildLyricsOnlyLine(String line) {
-    final lyrics = line.replaceAll(
-      RegExp(r'\[([^\]]+)\]'),
-      '',
-    );
+    final lyrics = line.replaceAll(RegExp(r'\[([^\]]+)\]'), '');
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 8),
       child: pw.Text(
         lyrics,
-        style: pw.TextStyle(
-          fontSize: 12,
-          font: pw.Font.courier(),
-        ),
+        style: pw.TextStyle(fontSize: 12, font: pw.Font.courier()),
       ),
     );
   }
@@ -123,10 +111,7 @@ class SongPdfService {
         padding: const pw.EdgeInsets.only(bottom: 8),
         child: pw.Text(
           line,
-          style: pw.TextStyle(
-            fontSize: 12,
-            font: pw.Font.courier(),
-          ),
+          style: pw.TextStyle(fontSize: 12, font: pw.Font.courier()),
         ),
       );
     }
@@ -137,10 +122,7 @@ class SongPdfService {
     int sourceIndex = 0;
 
     for (final match in matches) {
-      final before = line.substring(
-        sourceIndex,
-        match.start,
-      );
+      final before = line.substring(sourceIndex, match.start);
 
       lyricsLine.write(before);
       chordLine.write(' ' * before.length);
@@ -155,9 +137,7 @@ class SongPdfService {
     lyricsLine.write(remaining);
 
     if (chordLine.length < lyricsLine.length) {
-      chordLine.write(
-        ' ' * (lyricsLine.length - chordLine.length),
-      );
+      chordLine.write(' ' * (lyricsLine.length - chordLine.length));
     }
 
     return pw.Padding(
@@ -179,10 +159,7 @@ class SongPdfService {
           pw.Text(
             lyricsLine.toString(),
             maxLines: 1,
-            style: pw.TextStyle(
-              fontSize: 12,
-              font: pw.Font.courier(),
-            ),
+            style: pw.TextStyle(fontSize: 12, font: pw.Font.courier()),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../providers/song_provider.dart';
 import '../../concert/concert_playlist_screen.dart';
 import '../providers/setlist_provider.dart';
+import '../services/setlist_share_service.dart';
 
 class SetlistDetailScreen extends ConsumerWidget {
   final String setlistId;
@@ -34,6 +35,32 @@ class SetlistDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(setlist.name),
         actions: [
+          if (setlistSongs.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.share),
+              tooltip: "Partager la setlist",
+              onPressed: () async {
+                try {
+                  final link = await SetlistShareService.createShareLink(
+                    setlist: setlist,
+                    allSongs: songs,
+                  );
+
+                  await SetlistShareService.shareLink(
+                    link: link,
+                    setlistName: setlist.name,
+                  );
+                } catch (error) {
+                  if (!context.mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Impossible de partager : $error"),
+                    ),
+                  );
+                }
+              },
+            ),
           if (setlistSongs.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.play_arrow),

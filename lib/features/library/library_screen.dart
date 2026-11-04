@@ -1,9 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'apple_music_search_screen.dart';
 import '../../providers/song_provider.dart';
+import '../../shared/models/song.dart';
 import '../songs/song_detail_screen.dart';
 import '../songs/song_form_screen.dart';
+import '../setlists/models/setlist.dart';
+import '../setlists/services/setlist_share_service.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
@@ -23,6 +28,32 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     super.dispose();
   }
 
+  Future<void> _shareSong(Song song) async {
+    try {
+      final link = await SetlistShareService.createShareLink(
+        setlist: Setlist(
+          id: 'single-${song.id}',
+          name: song.title,
+          songIds: [song.id],
+        ),
+        allSongs: [song],
+      );
+
+      await SetlistShareService.shareLink(
+        link: link,
+        setlistName: song.title,
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Impossible de partager : $error"),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final songs = ref.watch(songProvider);
@@ -37,6 +68,20 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bibliothèque"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.library_music),
+            tooltip: "Rechercher dans le catalogue Apple Music",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AppleMusicSearchScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: "Ajouter un morceau",
@@ -123,6 +168,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          IconButton(
+                            icon: const Icon(Icons.share),
+                            tooltip: "Partager ce morceau",
+                            onPressed: () => _shareSong(song),
+                          ),
                           IconButton(
                             icon: Icon(
                               song.favorite

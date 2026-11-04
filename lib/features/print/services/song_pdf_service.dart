@@ -1,5 +1,5 @@
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -13,19 +13,38 @@ class SongPdfService {
     required String lyrics,
     bool showChords = true,
   }) async {
-    await Printing.layoutPdf(
-      dynamicLayout: false,
-      onLayout: (PdfPageFormat format) async {
-        return _buildPdf(
-          title: title,
-          artist: artist,
-          songKey: songKey,
-          bpm: bpm,
-          lyrics: lyrics,
-          showChords: showChords,
-        );
-      },
-    );
+    debugPrint('MUSICSCROLL PRINT : début');
+
+    try {
+      await Printing.layoutPdf(
+        name: '$title.pdf',
+        dynamicLayout: false,
+        onLayout: (PdfPageFormat format) async {
+          debugPrint('MUSICSCROLL PRINT : callback onLayout reçu');
+
+          final pdf = await _buildPdf(
+            title: title,
+            artist: artist,
+            songKey: songKey,
+            bpm: bpm,
+            lyrics: lyrics,
+            showChords: showChords,
+          );
+
+          debugPrint(
+            'MUSICSCROLL PRINT : PDF généré (${pdf.length} octets)',
+          );
+
+          return pdf;
+        },
+      );
+
+      debugPrint('MUSICSCROLL PRINT : layoutPdf terminé');
+    } catch (error, stackTrace) {
+      debugPrint('MUSICSCROLL PRINT : ERREUR $error');
+      debugPrintStack(stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   static Future<Uint8List> _buildPdf({
@@ -36,8 +55,9 @@ class SongPdfService {
     required String lyrics,
     required bool showChords,
   }) async {
-    final document = pw.Document();
+    debugPrint('MUSICSCROLL PRINT : construction du document');
 
+    final document = pw.Document();
     final lines = lyrics.split('\n');
 
     document.addPage(
@@ -48,12 +68,18 @@ class SongPdfService {
           return [
             pw.Text(
               title,
-              style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              style: pw.TextStyle(
+                fontSize: 24,
+                fontWeight: pw.FontWeight.bold,
+              ),
             ),
             pw.SizedBox(height: 6),
             pw.Text(
               artist,
-              style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey700),
+              style: const pw.TextStyle(
+                fontSize: 14,
+                color: PdfColors.grey700,
+              ),
             ),
             pw.SizedBox(height: 14),
             pw.Row(
@@ -87,7 +113,11 @@ class SongPdfService {
       ),
     );
 
-    return document.save();
+    final result = await document.save();
+
+    debugPrint('MUSICSCROLL PRINT : document.save terminé');
+
+    return result;
   }
 
   static pw.Widget _buildLyricsOnlyLine(String line) {
@@ -97,7 +127,10 @@ class SongPdfService {
       padding: const pw.EdgeInsets.only(bottom: 8),
       child: pw.Text(
         lyrics,
-        style: pw.TextStyle(fontSize: 12, font: pw.Font.courier()),
+        style: pw.TextStyle(
+          fontSize: 12,
+          font: pw.Font.courier(),
+        ),
       ),
     );
   }
@@ -111,7 +144,10 @@ class SongPdfService {
         padding: const pw.EdgeInsets.only(bottom: 8),
         child: pw.Text(
           line,
-          style: pw.TextStyle(fontSize: 12, font: pw.Font.courier()),
+          style: pw.TextStyle(
+            fontSize: 12,
+            font: pw.Font.courier(),
+          ),
         ),
       );
     }
@@ -126,7 +162,6 @@ class SongPdfService {
 
       lyricsLine.write(before);
       chordLine.write(' ' * before.length);
-
       chordLine.write(match.group(1)!);
 
       sourceIndex = match.end;
@@ -159,7 +194,10 @@ class SongPdfService {
           pw.Text(
             lyricsLine.toString(),
             maxLines: 1,
-            style: pw.TextStyle(fontSize: 12, font: pw.Font.courier()),
+            style: pw.TextStyle(
+              fontSize: 12,
+              font: pw.Font.courier(),
+            ),
           ),
         ],
       ),

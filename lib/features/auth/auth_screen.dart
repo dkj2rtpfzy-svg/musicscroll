@@ -113,9 +113,12 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } on AuthException catch (error) {
       _showMessage(error.message);
-    } catch (error) {
+        } catch (error, stackTrace) {
+      debugPrint('ERREUR MUSICSCROLL AUTH : $error');
+      debugPrintStack(stackTrace: stackTrace);
+
       _showMessage(
-        'Une erreur est survenue. Vérifiez votre connexion internet.',
+        'Erreur de connexion. Consultez le terminal pour le détail.',
       );
     } finally {
       if (mounted) {

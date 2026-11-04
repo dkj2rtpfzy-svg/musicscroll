@@ -56,7 +56,18 @@ That saved a wretch like me.
     state = [...state, song];
     _save();
   }
+void addSongsIfMissing(List<Song> incomingSongs) {
+  final existingIds = state.map((song) => song.id).toSet();
 
+  final newSongs = incomingSongs
+      .where((song) => !existingIds.contains(song.id))
+      .toList();
+
+  if (newSongs.isEmpty) return;
+
+  state = [...state, ...newSongs];
+  _save();
+}
   /// Permet de restaurer un morceau à une position précise
   void insertSong(int index, Song song) {
     final songs = [...state];

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../shared/models/song.dart';
 import '../../features/concert/concert_screen.dart';
@@ -20,11 +21,51 @@ class SongDetailScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<SongDetailScreen> createState() => _SongDetailScreenState();
+  ConsumerState<SongDetailScreen> createState() =>
+      _SongDetailScreenState();
 }
 
 class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   bool _isPrinting = false;
+
+  Future<void> _searchChordsOnline() async {
+    final query = Uri.encodeComponent(
+      '${widget.song.title} ${widget.song.artist} accords guitare paroles',
+    );
+
+    final uri = Uri.parse(
+      'https://www.google.com/search?q=$query',
+    );
+
+    try {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!launched && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Impossible d'ouvrir la recherche Internet.",
+            ),
+          ),
+        );
+      }
+    } catch (error) {
+      debugPrint('Erreur recherche accords : $error');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Impossible d'ouvrir la recherche Internet.",
+            ),
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _printSong() async {
     if (_isPrinting) return;
@@ -60,6 +101,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final song = widget.song;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -85,22 +127,30 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          // Titre de la chanson
           Text(
             song.title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 34,
               fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
             ),
           ),
+
           const SizedBox(height: 8),
+
+          // Artiste
           Text(
             song.artist,
             style: TextStyle(
               fontSize: 20,
-              color: Colors.grey.shade400,
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
+
           const SizedBox(height: 24),
+
+          // Boutons Setlist et Concert
           Row(
             children: [
               Expanded(
@@ -138,7 +188,10 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               ),
             ],
           ),
+
           const SizedBox(height: 12),
+
+          // Impression et PDF
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -147,7 +200,9 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
                     )
                   : const Icon(Icons.print),
               label: Text(
@@ -155,7 +210,24 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               ),
             ),
           ),
+
+          const SizedBox(height: 12),
+
+          // Recherche des accords sur Internet
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _searchChordsOnline,
+              icon: const Icon(Icons.search),
+              label: const Text(
+                "Rechercher les accords sur Internet",
+              ),
+            ),
+          ),
+
           const SizedBox(height: 24),
+
+          // Tonalité
           Card(
             child: ListTile(
               leading: const Icon(Icons.music_note),
@@ -163,6 +235,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               trailing: Text(song.key),
             ),
           ),
+
+          // Tempo
           Card(
             child: ListTile(
               leading: const Icon(Icons.speed),
@@ -170,6 +244,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               trailing: Text("${song.bpm} BPM"),
             ),
           ),
+
+          // Favori
           Card(
             child: ListTile(
               leading: Icon(
@@ -180,16 +256,25 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               trailing: Text(song.favorite ? "Oui" : "Non"),
             ),
           ),
+
           const SizedBox(height: 30),
-          const Text(
+
+          // Titre de la section paroles
+          Text(
             "Paroles",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
             ),
           ),
+
           const SizedBox(height: 12),
-          ChordProViewer(lyrics: song.lyrics),
+
+          // Affichage des paroles et accords
+          ChordProViewer(
+            lyrics: song.lyrics,
+          ),
         ],
       ),
     );

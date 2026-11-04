@@ -19,7 +19,19 @@ class SetlistNotifier extends StateNotifier<List<Setlist>> {
     state = [...state, setlist];
     _save();
   }
+void addImportedSetlist({
+  required String name,
+  required List<String> songIds,
+}) {
+  final setlist = Setlist(
+    id: 'import_${DateTime.now().microsecondsSinceEpoch}',
+    name: name,
+    songIds: songIds,
+  );
 
+  state = [...state, setlist];
+  _save();
+}
   void removeSetlist(String id) {
     state = state.where((setlist) => setlist.id != id).toList();
     _save();

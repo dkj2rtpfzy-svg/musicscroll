@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# MusicScroll - sauvegardes locales à ne pas publier
+.backup_*/
+lib_BACKUP_*/
+icon_preview_release8/
+**/*.bak
+**/*.bak_test
+**/*.save
+
+# Configuration temporaire locale Supabase
+supabase/.temp/
+ios/Runner/Assets.xcassets/AppIcon.appiconset_BACKUP_RELEASE8/

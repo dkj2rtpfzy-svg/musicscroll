@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:external_display/external_display.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../shared/models/song.dart';
@@ -21,35 +22,23 @@ class ConcertScreen extends StatefulWidget {
 
 class _ConcertScreenState extends State<ConcertScreen>
     with SingleTickerProviderStateMixin {
-  // Affiche ou masque les commandes du mode Concert.
   bool _showControls = false;
-
-  // Indique si le défilement automatique est en cours.
   bool _isPlaying = false;
-
-  // Taille prévue pour le texte des paroles.
   double _lyricsFontSize = 28;
 
-  // Contrôleur du défilement vertical.
   final ScrollController _scrollController = ScrollController();
 
-  // Animation utilisée pour faire défiler les paroles.
   late final Ticker _ticker;
-
-  // Temps du dernier rafraîchissement du défilement.
   Duration? _lastElapsed;
 
-  // Vitesse de défilement en pixels par seconde.
   double _scrollSpeed = 50;
 
-  // Minuteur permettant de masquer automatiquement les commandes.
   Timer? _controlsTimer;
 
   @override
   void initState() {
     super.initState();
 
-    // Empêche l'écran de s'éteindre pendant le mode Concert.
     WakelockPlus.enable();
 
     _ticker = createTicker((elapsed) {
@@ -69,8 +58,7 @@ class _ConcertScreenState extends State<ConcertScreen>
       final nextOffset =
           _scrollController.offset + (_scrollSpeed * delta);
 
-      if (nextOffset >=
-          _scrollController.position.maxScrollExtent) {
+      if (nextOffset >= _scrollController.position.maxScrollExtent) {
         _ticker.stop();
 
         if (!mounted) return;
@@ -86,7 +74,6 @@ class _ConcertScreenState extends State<ConcertScreen>
     });
   }
 
-  // Affiche les commandes pendant 3 secondes.
   void _showControlsTemporarily() {
     _controlsTimer?.cancel();
 
@@ -106,7 +93,6 @@ class _ConcertScreenState extends State<ConcertScreen>
     );
   }
 
-  // Lance ou arrête le défilement.
   void _togglePlay() {
     if (_isPlaying) {
       _ticker.stop();
@@ -127,7 +113,6 @@ class _ConcertScreenState extends State<ConcertScreen>
     _ticker.start();
   }
 
-  // Augmente la taille du texte.
   void _increaseFont() {
     setState(() {
       if (_lyricsFontSize < 48) {
@@ -136,7 +121,6 @@ class _ConcertScreenState extends State<ConcertScreen>
     });
   }
 
-  // Diminue la taille du texte.
   void _decreaseFont() {
     setState(() {
       if (_lyricsFontSize > 18) {
@@ -145,7 +129,6 @@ class _ConcertScreenState extends State<ConcertScreen>
     });
   }
 
-  // Retourne au début de la chanson.
   void _scrollToTop() {
     _ticker.stop();
 
@@ -162,15 +145,110 @@ class _ConcertScreenState extends State<ConcertScreen>
     );
   }
 
+  // Ouvre la fenêtre de choix de l'affichage.
+  Future<void> _showExternalDisplayOptions() async {
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF222222),
+          title: const Text(
+            "Affichage des paroles",
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            "Où souhaitez-vous afficher les paroles de cette chanson ?",
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop('cancel');
+              },
+              child: const Text("Annuler"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop('iphone');
+              },
+              child: const Text("Sur l’iPhone"),
+            ),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.cast),
+              label: const Text("Écran externe"),
+              onPressed: () {
+                Navigator.of(dialogContext).pop('external');
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted) return;
+
+    if (choice == 'external') {
+      await _connectExternalDisplay();
+    }
+  }
+
+  // Vérifie les écrans, lance l'affichage externe
+  // et lui transmet les paroles de la chanson.
+  Future<void> _connectExternalDisplay() async {
+    try {
+      final screens = await externalDisplay.getScreen();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Écrans détectés : ${screens.length}"),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+
+      await externalDisplay.connect();
+
+      await externalDisplay.waitingTransferParametersReady(
+        onReady: () {
+          unawaited(
+            externalDisplay.sendParameters(
+              action: 'lyrics',
+              value: widget.song.lyrics,
+            ),
+          );
+        },
+        onError: () {
+          if (!mounted) return;
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "L’écran externe n’est pas prêt.",
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Connexion à l’écran externe impossible : $e",
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
-    // Annule le minuteur s'il existe.
     _controlsTimer?.cancel();
 
-    // Restaure le comportement normal de l'écran.
     WakelockPlus.disable();
 
-    // Libère les ressources.
     _ticker.dispose();
     _scrollController.dispose();
 
@@ -182,14 +260,17 @@ class _ConcertScreenState extends State<ConcertScreen>
     return Scaffold(
       backgroundColor: Colors.black,
 
-      // La barre supérieure n'est visible que lorsque les commandes
-      // sont affichées.
       appBar: _showControls
           ? AppBar(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               title: Text(widget.song.title),
               actions: [
+                IconButton(
+                  icon: const Icon(Icons.cast),
+                  tooltip: "Écran externe",
+                  onPressed: _showExternalDisplayOptions,
+                ),
                 IconButton(
                   icon: const Icon(Icons.vertical_align_top),
                   tooltip: "Début",
@@ -222,19 +303,16 @@ class _ConcertScreenState extends State<ConcertScreen>
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
 
-          // Un simple tap affiche les commandes.
           onTap: () {
-  _showControlsTemporarily();
-},
+            _showControlsTemporarily();
+          },
 
-          // Un double tap lance ou arrête le défilement.
           onDoubleTap: () {
             _togglePlay();
           },
 
           child: Column(
             children: [
-              // Réglage de la vitesse.
               if (_showControls)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -266,7 +344,6 @@ class _ConcertScreenState extends State<ConcertScreen>
                   ),
                 ),
 
-              // Zone des paroles.
               Expanded(
                 child: ListView(
                   controller: _scrollController,
@@ -284,9 +361,9 @@ class _ConcertScreenState extends State<ConcertScreen>
                                 ),
                       ),
                       child: ChordProViewer(
-  lyrics: widget.song.lyrics,
-  fontSize: _lyricsFontSize,
-),
+                        lyrics: widget.song.lyrics,
+                        fontSize: _lyricsFontSize,
+                      ),
                     ),
                   ],
                 ),
